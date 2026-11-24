@@ -13,7 +13,8 @@ Reads the status line JSON on stdin (https://code.claude.com/docs/en/statusline.
 - ●n changed files, ↑n commits not pushed, ↓n commits not pulled. "wt" names the git worktree, if any.
 - "cache" is the prompt cache: warm with the time until it expires, or cold (the next message re-reads the whole
   context at full price).
-- Past 70 % of the context the bar says "wrap up?".
+- Past 70 % of the context the bar says "wrap up?". The fill is also written to <temp>/claude-context/<session>.json
+  for a project's wrap-up guard hook, which hooks cannot learn otherwise.
 - In a project made with the scaffold, a third line: the active plan and its ticked steps, the health checks due
   (docs/HEALTH.md), and how many scaffold commits the project has not taken yet (scaffold ↑n). The scaffold's folder
   comes from SCAFFOLD_HOME or the workstation setup's record (~/.scaffold/workstation.json).
@@ -304,6 +305,26 @@ def visible_length(text: str) -> int:
     return length
 
 
+def share_context(data: dict) -> None:
+    """Write the context fill for the session where hooks can read it: hooks are not told it, the status line is.
+    A project's wrap-up guard (.claude/hooks/wrap_up_guard.py) reads <temp>/claude-context/<session_id>.json."""
+    session = data.get("session_id")
+    window = data.get("context_window") or {}
+    if not session or window.get("used_percentage") is None:
+        return
+    import tempfile
+    try:
+        folder = Path(tempfile.gettempdir()) / "claude-context"
+        folder.mkdir(exist_ok=True)
+        (folder / f"{session}.json").write_text(json.dumps({
+            "used_percentage": window["used_percentage"],
+            "context_window_size": window.get("context_window_size"),
+            "at": time.time(),
+        }), encoding="utf-8")
+    except OSError:
+        pass
+
+
 def main() -> None:
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -317,6 +338,7 @@ def main() -> None:
     if os.path.exists(capture):  # debugging aid: create this file, read statusline-last.json, delete the file
         with open(os.path.expanduser("~/.claude/statusline-last.json"), "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
+    share_context(data)
     limits = data.get("rate_limits") or {}
     five, seven = limits.get("five_hour") or {}, limits.get("seven_day") or {}
     bars = [b for b in (

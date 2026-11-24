@@ -300,6 +300,23 @@ def edit_file(sync: Sync, rel: str, fn, what: str):
         sync.note("*", rel, msg)
 
 
+def merge_settings(sync: Sync, rel: str, fragments: list[Path]):
+    target = sync.root / rel
+    try:
+        current = json.loads(target.read_text(encoding="utf-8-sig")) if target.exists() else {}
+    except ValueError as e:
+        sync.note("!", rel, f"not valid JSON ({e}): scaffold settings not merged")
+        return
+    changed = []
+    for f in fragments:
+        changed += deep_merge(current, json.loads(f.read_text(encoding="utf-8")))
+    if changed:
+        if not sync.dry:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
+        sync.note("*", rel, f"settings merged: {', '.join(sorted(set(changed)))}")
+
+
 # ---------------------------------------------------------------- project commands
 
 def project_sync(root: Path, names: list[str], args, title: str):
@@ -326,6 +343,12 @@ def project_sync(root: Path, names: list[str], args, title: str):
               lambda t: (lambda r: (r[0], "Modules section added" if r[1] else "Modules list updated"))(
                   set_block(t, "modules", body, heading="Modules")),
               "the Modules list")
+
+    # Claude Code settings the modules bring (hooks, permissions): merged into the project's seed settings on every
+    # apply and update, appending what is missing and keeping the project's own entries.
+    fragments = [m.path / "settings.json" for m in (mods[n] for n in order) if (m.path / "settings.json").exists()]
+    if fragments:
+        merge_settings(sync, ".claude/settings.json", fragments)
 
     # Health ledger rows the modules bring (added once; the project owns them after).
     rows = [(n, h) for n in order for h in mods[n].health]
@@ -459,11 +482,18 @@ def cmd_list(args):
 # ---------------------------------------------------------------- workstation
 
 def deep_merge(base: dict, add: dict, path="") -> list[str]:
+    """Merge add into base: dicts recursively, lists by appending the items base lacks (so a project's own
+    permissions and hooks stay), other values replaced. Returns the keys changed."""
     changed = []
     for k, v in add.items():
         key = f"{path}{k}"
         if isinstance(v, dict) and isinstance(base.get(k), dict):
             changed += deep_merge(base[k], v, key + ".")
+        elif isinstance(v, list) and isinstance(base.get(k), list):
+            missing = [item for item in v if item not in base[k]]
+            if missing:
+                base[k].extend(missing)
+                changed.append(key)
         elif base.get(k) != v:
             base[k] = v
             changed.append(key)

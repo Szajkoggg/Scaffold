@@ -36,6 +36,7 @@ A module (and `core`) is a folder with:
 | Path | Delivered to the project as |
 |---|---|
 | `module.json` | Not delivered: name, summary, kind, status, requires, suggests, detect (signs it fits), seed, health rows |
+| `settings.json` | Claude Code settings (hooks, permissions) merged into the project's `.claude/settings.json` on every apply and update: missing entries appended, the project's own kept |
 | `files/**` | The same path in the project |
 | `skills/<name>/` | `.claude/skills/<name>/` and `.agents/skills/<name>/` (Claude Code and Codex) |
 | `agents/<name>.md` | `.claude/agents/<name>.md` |
@@ -67,7 +68,7 @@ Module status: `stub` (only `NOTES.md`), `partial` (delivers some of its content
 | Owner | Files | On update |
 |---|---|---|
 | The scaffold (owned) | Everything delivered that is not a seed: `docs/process/**`, skills, agents | Replaced while untouched; an edited one is offered for merging in `.scaffold/incoming/` |
-| The project (seed) | `AGENTS.md`, `CLAUDE.md`, `docs/*.md`, the folder READMEs, `.gitignore`, ... (`core/module.json`, `seed`) | Copied once, never touched again; except the Modules block in `AGENTS.md` and new health rows |
+| The project (seed) | `AGENTS.md`, `CLAUDE.md`, `docs/*.md`, the folder READMEs, `.gitignore`, ... (`core/module.json`, `seed`) | Copied once, never touched again; except the Modules block in `AGENTS.md`, new health rows and the modules' `settings.json` entries |
 
 A project's own rules go in its `AGENTS.md`, in a section named after the process document they extend (e.g.
 "## Review"), never into owned files. The project records what it got in `.scaffold/manifest.json` (committed).
