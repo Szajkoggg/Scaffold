@@ -1,9 +1,10 @@
 """Claude Code status line: where you are, the model and effort, and fill bars for the context and the usage limits.
 
-Reads the status line JSON on stdin (https://code.claude.com/docs/en/statusline.md) and prints two lines:
+Reads the status line JSON on stdin (https://code.claude.com/docs/en/statusline.md) and prints two or three lines:
 
-    ~/Code/project | main ●3 ↑1 | wt feature-x | Opus 5.5 · medium | cache 4m
+    ~/Code/project | main ●3 ↑1 | wt feature-x | Opus 5.5 · medium | cache 48m · 608k
     ctx ███░░░░░░░ 31%   5h █████│░░░░ 48% ↻ 2h05m   7d ██░│░░░░░░ 21% ↻ 3d4h
+    plan offline-mode 3/7 | health 2 due | scaffold ↑3
 
 - Colours run evenly from green through yellow and orange to red in OKLCH (equally bright, readable on light and
   dark backgrounds): each bar cell has the colour of its position, the percentage the colour of its value.
@@ -13,6 +14,9 @@ Reads the status line JSON on stdin (https://code.claude.com/docs/en/statusline.
 - "cache" is the prompt cache: warm with the time until it expires, or cold (the next message re-reads the whole
   context at full price).
 - Past 70 % of the context the bar says "wrap up?".
+- In a project made with the scaffold, a third line: the active plan and its ticked steps, the health checks due
+  (docs/HEALTH.md), and how many scaffold commits the project has not taken yet (scaffold ↑n). The scaffold's folder
+  comes from SCAFFOLD_HOME or the workstation setup's record (~/.scaffold/workstation.json).
 
 Truecolor where the terminal says so (COLORTERM, Windows Terminal), else the 256-colour cube;
 STATUSLINE_COLORS=truecolor|256 overrides. Values that are missing are left out, never shown as zero. Standard
@@ -21,9 +25,12 @@ library only.
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 import time
+from datetime import date, timedelta
+from pathlib import Path
 
 RESET = "\033[0m"
 BAR_WIDTH = 10
@@ -131,13 +138,134 @@ def git_state(cwd: str) -> str:
     return branch + ("" if not marks else " " + " ".join(marks))
 
 
+def tokens(count: float) -> str:
+    return f"{count / 1e6:.1f}M" if count >= 1e6 else f"{max(1, round(count / 1000))}k"
+
+
 def cache_state(cache) -> str:
+    """Warm: the time until it goes cold (orange under 10 min, red under 3) and the tokens a cold start would
+    rebuild. Cold: what the next message rebuilds."""
     if not isinstance(cache, dict) or "warm" not in cache:
         return ""
+    rebuild = cache.get("recache_tokens_if_cold")
+    rebuild = rebuild if isinstance(rebuild, (int, float)) and rebuild > 0 else None
     expires = epoch(cache.get("expires_at"))
     if cache.get("warm") and expires is not None and expires > time.time():
-        return f"{GREY}cache{RESET} {duration(expires - time.time())}"
-    return f"{GREY}cache{RESET} {colour(80)}cold{RESET}"
+        left = expires - time.time()
+        tone = colour(100) if left < 180 else colour(75) if left < 600 else ""
+        size = f" {GREY}·{RESET} {tokens(rebuild)}" if rebuild else ""
+        return f"{GREY}cache{RESET} {tone}{duration(left)}{RESET}{size}"
+    size = f" {GREY}·{RESET} {tokens(rebuild)} to rebuild" if rebuild else ""
+    return f"{GREY}cache{RESET} {colour(80)}cold{RESET}{size}"
+
+
+# ---------------------------------------------------------------- the scaffold's project files (third line)
+
+def project_root(data: dict) -> Path | None:
+    """The scaffolded project the session is in: the nearest folder upwards with .scaffold/manifest.json."""
+    start = (data.get("workspace") or {}).get("project_dir") or data.get("cwd")
+    if not start:
+        return None
+    folder = Path(start)
+    for candidate in (folder, *folder.parents):
+        if (candidate / ".scaffold" / "manifest.json").is_file():
+            return candidate
+    return None
+
+
+def read(path: Path) -> str:
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError:
+        return ""
+
+
+def plan_state(root: Path) -> str:
+    """The active plan (approved, in progress or stopped) and its ticked steps."""
+    active = []
+    for plan in sorted((root / "docs" / "plans").glob("*.md")):
+        if plan.name == "README.md":
+            continue
+        text = read(plan)
+        status = re.search(r"^Status:\s*(.+?)\s*$", text, re.M)
+        status = status.group(1).lower() if status else ""
+        if not status.startswith(("approved", "in progress", "stopped")):
+            continue
+        steps = re.search(r"^## Steps\s*$(.*?)(?=^## |\Z)", text, re.M | re.S)
+        boxes = re.findall(r"^- \[([ xX])\]", steps.group(1) if steps else "", re.M)
+        done = sum(1 for box in boxes if box != " ")
+        name = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", plan.stem)
+        active.append((name, done, len(boxes), status.startswith("stopped")))
+    if not active:
+        return ""
+    name, done, total, stopped = active[0]
+    progress = f" {colour(100 * done / total if total else 0)}{done}/{total}{RESET}" if total else ""
+    flag = f" {colour(90)}stopped{RESET}" if stopped else ""
+    more = f" {GREY}+{len(active) - 1}{RESET}" if len(active) > 1 else ""
+    return f"{GREY}plan{RESET} {name}{progress}{flag}{more}"
+
+
+def health_state(root: Path, applied: date | None) -> str:
+    """Health checks past their period (docs/HEALTH.md, the ledger); "never" counts from when the scaffold came."""
+    ledger = re.search(r"^## Ledger\s*$(.*?)(?=^## |\Z)", read(root / "docs" / "HEALTH.md"), re.M | re.S)
+    if not ledger:
+        return ""
+    unit_days = {"day": 1, "week": 7, "month": 30, "year": 365}
+    due = 0
+    for row in re.findall(r"^\|(.+)\|\s*$", ledger.group(1), re.M):
+        cells = [c.strip() for c in row.split("|")]
+        if len(cells) < 4:
+            continue
+        period = re.match(r"(\d+)\s*(day|week|month|year)s?\b", cells[2].lower())
+        if not period:
+            continue  # the header, the separator, or a trigger instead of a period
+        last = re.search(r"\d{4}-\d{2}-\d{2}", cells[3])
+        since = date.fromisoformat(last.group(0)) if last else applied
+        if since and since + timedelta(days=int(period.group(1)) * unit_days[period.group(2)]) < date.today():
+            due += 1
+    return f"{GREY}health{RESET} {colour(75)}{due} due{RESET}" if due else ""
+
+
+def scaffold_home() -> str | None:
+    """Where the scaffold repository is: SCAFFOLD_HOME, or what the workstation setup recorded."""
+    if os.environ.get("SCAFFOLD_HOME"):
+        return os.environ["SCAFFOLD_HOME"]
+    try:
+        with open(os.path.expanduser("~/.scaffold/workstation.json"), encoding="utf-8") as f:
+            return json.load(f).get("scaffold", {}).get("home")
+    except (OSError, ValueError):
+        return None
+
+
+def scaffold_state(version: str) -> str:
+    """How many scaffold commits the project has not taken yet (scaffold.py update brings them)."""
+    version = version.removesuffix("-dirty")
+    home = scaffold_home()
+    if not version or version == "unversioned" or not home:
+        return ""
+    try:
+        count = int(subprocess.run(["git", "-C", home, "rev-list", "--count", f"{version}..HEAD"],
+                                   capture_output=True, text=True, timeout=2, check=True).stdout.strip())
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return ""
+    return f"{GREY}scaffold{RESET} {colour(60)}↑{count}{RESET}" if count else ""
+
+
+def third_line(data: dict) -> str:
+    root = project_root(data)
+    if root is None:
+        return ""
+    try:
+        manifest = json.loads(read(root / ".scaffold" / "manifest.json"))
+    except ValueError:
+        manifest = {}
+    scaffold = manifest.get("scaffold") or {}
+    try:
+        applied = date.fromisoformat(scaffold.get("applied", ""))
+    except ValueError:
+        applied = None
+    parts = [plan_state(root), health_state(root, applied), scaffold_state(str(scaffold.get("version", "")))]
+    return f" {GREY}|{RESET} ".join(p for p in parts if p)
 
 
 def first_line(data: dict, short: bool = False) -> str:
@@ -206,6 +334,9 @@ def main() -> None:
     print(first)
     if second:
         print(second)
+    third = third_line(data)
+    if third:
+        print(third)
 
 
 main()
