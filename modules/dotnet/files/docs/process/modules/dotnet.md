@@ -66,10 +66,16 @@ Applied once by the bootstrap; the files are the project's afterwards.
 | Level | Command |
 |---|---|
 | Quick | `dotnet build <solution> -nologo -v q`, then `dotnet test <tests project> --no-build -nologo -v q --filter "<the changed area>"` |
-| Full | `dotnet test <solution> -nologo -v q --logger trx --results-directory tmp/checks` |
+| Full | `dotnet test <solution> -nologo -v q --logger "trx;LogFileName=tests.trx" --results-directory tmp/checks` |
 
 - **Pass or fail is the exit code**, and the counts come from the `.trx` results file, not from console text (its
-  format changes between SDK versions).
+  format changes between SDK versions). A bare `--logger trx` names the file after the user and machine; give it a
+  fixed name.
+- **On Microsoft.Testing.Platform** (the newer runner; `global.json` holds `"test": {"runner":
+  "Microsoft.Testing.Platform"}`, the test project `OutputType` Exe and its framework's runner, e.g. NUnit's
+  `EnableNUnitRunner`): `dotnet test --project <tests project> --results-directory tmp/checks --report-trx
+  --report-trx-filename tests.trx` (package `Microsoft.Testing.Extensions.TrxReport`). A path needs `--project`;
+  `--filter` keeps its syntax; exit 8 means no test matched, 7 a hang.
 - Slow tests carry `[Category("Slow")]`; the quick level adds `&Category!=Slow` to its filter, the full level runs
   them.
 - Warnings: report the count; a rise is a finding (Rules).
@@ -78,7 +84,10 @@ Applied once by the bootstrap; the files are the project's afterwards.
 
 - **"The file is locked by another process"** on build or test: a leftover `testhost` or `dotnet` process from an
   earlier or parallel run holds the DLL. Say so; wait for the other run, or ask before ending processes.
-- **A hung test**: `dotnet test --blame-hang-timeout 5m` names the test and writes a dump to the results folder.
+- **A hung test**: `dotnet test --blame-hang-timeout 5m` names the test and writes a dump to the results folder. On
+  Microsoft.Testing.Platform: `--hangdump --hangdump-timeout 5m --hangdump-type Mini` (package
+  `Microsoft.Testing.Extensions.HangDump`; the default is a full dump of hundreds of MB, and the `.trx` stays empty
+  after a hang).
 - **One test, with its output**: `dotnet test --filter "FullyQualifiedName~<Class>.<Test>" --logger
   "console;verbosity=detailed"`.
 - **Results that differ between machines**: floating-point maths can differ across operating systems, CPUs and

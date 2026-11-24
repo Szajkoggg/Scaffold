@@ -3,8 +3,8 @@
   The bootstrap copies it to the repository root (or the .NET solution's folder) and fills in the versions;
   from then on the copy is the project's own.
 
-  Versions: the latest stable of each package, found with
-    dotnet package search <package> --exact-match
+  Versions: the latest stable of each package, found with "dotnet package search <package>" and its exact-match
+  option (spelled out in dotnet.md, "Repository setup": an XML comment may not contain two hyphens in a row).
   With central package management (Directory.Packages.props), move the versions there.
 
   Which rules fail the build is set in .editorconfig (severity = error), the one place for rules; here only the

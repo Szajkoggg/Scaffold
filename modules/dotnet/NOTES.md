@@ -17,14 +17,27 @@ Not delivered to projects.
   - With the final templates: 12 errors (6 × S2234 arguments possibly swapped, 6 × S2681 missing braces), worth a
     look in that project; the largest warning groups are S1104 (public fields, Unity convention: set to none for
     Unity-shared code), S3776 (190 methods over 15), S3358 (nested ternaries).
+- **The templates' `Directory.Build.props` did not load** (MSB4024): its comment held a command with two hyphens in a
+  row, which XML comments forbid. Fixed; every XML file in the scaffold now parses.
+- **Analyzers inside Unity** (the same core in a clone of its Unity project, Unity 6000.4, SDK 11.0.100): analyzer
+  DLLs labelled `RoslynAnalyzer` in the core's asmdef folder run on that assembly and on every assembly referencing
+  it (+77 warnings elsewhere). Shared files give the same counts for the rules both report (S2234, S2681, S3358,
+  S3887); several Sonar rules never fire in Unity. Microsoft.VisualStudio.Threading.Analyzers 18.x needs Roslyn 4.11
+  against Unity's 4.3 (CS9057) and does not run. Unity ignores `.editorconfig`; a `*.globalconfig` beside the asmdef
+  sets severities for that assembly, and errors stop the batchmode compile. **Not adopted**: Unity finds nothing
+  the .NET build misses, and adds noise and a version trap.
+- **Microsoft.Testing.Platform** (NUnit3TestAdapter 6.3.1 with `EnableNUnitRunner`, the TrxReport and HangDump
+  extensions 2.5.3): the commands in the module's Checks and Diagnosing. Without the `global.json` runner entry,
+  SDK 10 and later refuse a project switched to it.
+- **Shrink-only baseline**: a ~50-line script reading the build's SARIF (`<ErrorLog>...sarif,version=2.1</ErrorLog>`;
+  csc does not create the folder) into rule, file and count, compared with a committed TSV: 258 lines for 877
+  findings (173 with S1104 off and S3776 left out); a planted warning shows as new, a fixed one as stale.
 
 ## Open
 
-- Analyzers inside Unity itself (Roslyn analyzer DLLs labelled `RoslynAnalyzer` in `Assets/`) so the Editor reports
-  the same rules: not covered yet; the .NET project of a pure C# core covers the shared code.
-- Microsoft.Testing.Platform (the new `dotnet test` runner): check how `--logger trx` and `--blame-hang-timeout`
-  change when a project moves to it.
-- A baseline that can only shrink (as ESLint's bulk suppressions and dependency-cruiser's known violations do, see the typescript module) would beat lowering errors to warnings on an existing codebase. Roslyn has no built-in one; candidates to evaluate: a checked-in list of suppressed diagnostics with a check that fails when an entry no longer matches.
+- **A baseline that can only shrink**, to be decided whether to ship it (as `tools/dotnet/check_baseline.py`): tried
+  once (below) and it works. It keeps the rules strict for new code while old findings can only go, per file, which
+  lowering severities in `.editorconfig` cannot; errors in the baseline still have to be lowered to warnings.
 
 ## Out of scope (decided; revisit when a project asks)
 
