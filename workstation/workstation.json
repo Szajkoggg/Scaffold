@@ -1,12 +1,23 @@
 {
-  "skills_dirs": [".claude/skills", ".codex/skills"],
-  "personal_files": [".claude/CLAUDE.md", ".codex/AGENTS.md"],
+  "skills_dirs": [
+    ".claude/skills",
+    ".codex/skills"
+  ],
+  "personal_files": [
+    ".claude/CLAUDE.md",
+    ".codex/AGENTS.md"
+  ],
   "files": [
-    {"from": "claude/statusline.py", "to": ".claude/statusline.py"},
-    {"from": "claude/statusline-command.sh", "to": ".claude/statusline-command.sh"}
+    {
+      "from": "claude/statusline.py",
+      "to": ".claude/statusline.py"
+    }
   ],
   "settings": [
-    {"from": "claude/settings.json", "to": ".claude/settings.json"}
+    {
+      "from": "claude/settings.json",
+      "to": ".claude/settings.json"
+    }
   ],
   "env": {
     "DISABLE_TELEMETRY": {

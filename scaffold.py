@@ -500,7 +500,7 @@ def cmd_workstation(args):
 
     for item in conf.get("settings", []):
         target = home / item["to"]
-        fragment = json.loads((ws / item["from"]).read_text(encoding="utf-8"))
+        fragment = json.loads((ws / item["from"]).read_text(encoding="utf-8").replace("{{HOME}}", home.as_posix()))
         current = json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
         changed = deep_merge(current, fragment)
         if changed:
