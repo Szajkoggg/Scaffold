@@ -23,6 +23,6 @@ same conditions, judged by an independent critic, and shown to the user on a she
 
 ## Agents
 
-| Agent | Role |
-|---|---|
-| `visual-critic` | [roles/visual-critic.md](../roles/visual-critic.md) |
+| Agent | Role | Runs at |
+|---|---|---|
+| `visual-critic` | [roles/visual-critic.md](../roles/visual-critic.md) | main model, high |

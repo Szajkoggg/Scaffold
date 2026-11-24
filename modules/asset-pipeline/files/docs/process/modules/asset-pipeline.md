@@ -36,7 +36,7 @@ models the service, prompt and settings.
 
 ## Agents
 
-| Agent | Role |
-|---|---|
-| `asset-builder` | [roles/asset-builder.md](../roles/asset-builder.md) |
-| `asset-integrator` | [roles/asset-integrator.md](../roles/asset-integrator.md) |
+| Agent | Role | Runs at |
+|---|---|---|
+| `asset-builder` | [roles/asset-builder.md](../roles/asset-builder.md) | main model, medium |
+| `asset-integrator` | [roles/asset-integrator.md](../roles/asset-integrator.md) | smaller model, medium |

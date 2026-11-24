@@ -23,9 +23,9 @@ and a release prepared by the `release-auditor` and published only by the user.
 
 ## Agents
 
-| Agent | Role |
-|---|---|
-| `release-auditor` | [roles/release-auditor.md](../roles/release-auditor.md) |
+| Agent | Role | Runs at |
+|---|---|---|
+| `release-auditor` | [roles/release-auditor.md](../roles/release-auditor.md) | smaller model, medium |
 
 ## Sources
 

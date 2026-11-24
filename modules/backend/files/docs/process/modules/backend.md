@@ -23,9 +23,9 @@ security review of every change that touches the attack surface.
 
 ## Agents
 
-| Agent | Role |
-|---|---|
-| `security-reviewer` | [roles/security-reviewer.md](../roles/security-reviewer.md) |
+| Agent | Role | Runs at |
+|---|---|---|
+| `security-reviewer` | [roles/security-reviewer.md](../roles/security-reviewer.md) | main model, high |
 
 ## Sources
 
