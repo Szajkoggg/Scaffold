@@ -24,5 +24,8 @@ Not delivered to projects.
   the same rules: not covered yet; the .NET project of a pure C# core covers the shared code.
 - Microsoft.Testing.Platform (the new `dotnet test` runner): check how `--logger trx` and `--blame-hang-timeout`
   change when a project moves to it.
-- `dotnet format` stays out (no formatter by default); revisit if a project asks for one.
 - A baseline that can only shrink (as ESLint's bulk suppressions and dependency-cruiser's known violations do, see the typescript module) would beat lowering errors to warnings on an existing codebase. Roslyn has no built-in one; candidates to evaluate: a checked-in list of suppressed diagnostics with a check that fails when an entry no longer matches.
+
+## Out of scope (decided; revisit when a project asks)
+
+- `dotnet format` stays out (no formatter by default); revisit if a project asks for one.

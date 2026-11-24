@@ -69,6 +69,9 @@ Applied once by the bootstrap; the files are the project's afterwards. Templates
 - The one warning is cognitive complexity: report the count, do not fail on it (`code.md`, "Size triggers").
 - `node --test` prints every passing test; pass `--test-reporter=dot` (or Vitest's `--reporter=dot`) and keep the
   full report in `tmp/checks/`.
+- **`vitest related`** follows imports transitively (a change to a module runs the tests of the modules importing it)
+  and accepts test files too. With no matching tests, or no files at all, it exits 0: pass the changed files
+  explicitly, never an empty list, or a check that tested nothing looks like a pass.
 
 ## Diagnosing
 

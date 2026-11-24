@@ -13,6 +13,10 @@ Not delivered to projects.
   missing page is "not taken" with exit 3; `--only` works.
 - `stylelint.config.mjs` with stylelint 17: hex, named and function colours are errors in `app.css` and allowed in
   `tokens.css`.
+- Lighthouse 13.6.0 (`npx --yes`, installed Chrome, a static page): the Health command exits 0 and writes only the
+  JSON; three runs varied little on a tiny page (LCP 601 to 627 ms). With the server down it exits 1 yet still writes
+  the JSON with `runtimeError`. Two outputs with `--output-path=tmp/lh` become `tmp/lh.report.json` and `.html`. No
+  temp-folder EPERM on Windows. 13.x has no budget flag; the budgets are in `WORKING.md`.
 
 ## Taken from an earlier web project, changed or left out
 
@@ -27,7 +31,10 @@ Not delivered to projects.
 
 ## Open
 
-- Lighthouse in the CLI was not run here.
+None.
+
+## Out of scope (decided; revisit when a project asks)
+
 - Orchestrating the "before" (a worktree at the base commit, its build, a second server) is described, not scripted;
   a script may come once a project needs it often.
 - Visual comparison by pixels (a diff image) is not included: the critic compares; add it if projects want it.

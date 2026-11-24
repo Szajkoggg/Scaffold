@@ -30,8 +30,10 @@ Updated: 2026-11-24
    Watch the wrap-up guard fire in a live session.
 2. **Build the waiting parts with the first project that needs them**: the review-sheet generator
    (`visual-review`) and an asset validator (`asset-pipeline`).
-3. **Settle the open points** listed under "Open" in each module's `NOTES.md` (e.g. the Unity capture template under
-   URP, `unity test --affected`, EEVEE headless, Lighthouse, Vitest `related`).
+3. **Open points left** (each module's `NOTES.md`, "Open"; scope decisions are under "Out of scope"): `HeadlessCapture`
+   under HDRP; the `unity` CLI's package-update query and `unity run --command`; analyzers inside Unity and the new
+   `dotnet test` runner. Settled on 2026-11-24 by probes: EEVEE headless, URP capture, `unity test --affected`,
+   Lighthouse, Vitest `related`.
 4. **Ideas, not decided**:
    - a language-independent code check (source files past their size trigger, `WORKAROUND:` markers);
    - a shrink-only analyzer baseline for .NET (as ESLint's bulk suppressions do for TypeScript);

@@ -104,7 +104,10 @@ The bootstrap also verifies, and proposes fixing:
 - Check `unity status` before a batchmode run (the project lock, Rules).
 - A run ends when its command exits; read the results report (`-o`) for the counts and the first failure, not the
   streamed log.
-- `--affected` runs the whole suite when it cannot tell what a change reaches; that is not a failure.
+- `--affected` runs the whole suite when it cannot tell what a change reaches; that is not a failure. It learns the
+  tests from the last full run's report at the same `-o` path (run the full check first), writes its own report to
+  `<name>.affected.xml`, and runs everything when nothing is uncommitted (`--since <ref>` compares with a branch).
+  It narrows by assembly definition; on a small project the Editor's start-up dominates either way.
 - `--retries` is for finding flaky tests (it reports them as flaky), never for making a run pass; a flaky test goes
   to `docs/HEALTH.md`, "Noticed".
 - Long runs (PlayMode, builds) go in the background with `--timeout`; one batchmode run per project at a time.
@@ -148,7 +151,9 @@ The tools for the core ledger's rows (`docs/HEALTH.md`), used by the `auditor`:
 
 - **Pictures without a window**: a player run with `-batchmode` but not `-nographics` renders a camera into a
   texture and writes it (`docs/process/tools/unity/HeadlessCapture.cs` is a template). `ScreenCapture` gives a black
-  picture in batchmode, and rendering a camera with `-nographics` crashes.
+  picture in batchmode; with `-nographics` there is no graphics device and the picture comes out flat grey while the
+  run exits 0 (the template refuses with exit 3). The same render into a texture works in an Editor batchmode static
+  method.
 - Views are fixed (scene, camera, seed, settings) so a before and an after are comparable (`visual-review`).
 - Beyond the principles, review for: allocations in `Update` and other per-frame code; `Find`/`GetComponent` in
   per-frame code; editor-only APIs outside `#if UNITY_EDITOR` or an Editor assembly; serialized field renames

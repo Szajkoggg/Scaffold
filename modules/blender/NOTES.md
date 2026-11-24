@@ -14,6 +14,10 @@ Not delivered to projects.
   copy (seeded bmesh rocks, FBX export with the add-on enabled by the script) exits 0 with its outputs.
 - `render_preview.py`: renders the views from a `.blend` and from an FBX. The first version framed only one of three
   objects (stale world matrices after loading); fixed with `view_layer.update()`, which is now a Rule.
+- EEVEE renders headless (`-b`, an OpenGL context with no window; NVIDIA, Windows 11): `render_preview.py --engine
+  eevee` exits 0; the first render takes about 14 s (shader compilation), later ones 1 to 3 s. Workbench about 0.7 s,
+  Cycles on the CPU about 0.6 s at 16 samples. The engine enum's `enum_items` listed only `BLENDER_EEVEE`;
+  `BLENDER_WORKBENCH` and `CYCLES` could still be assigned. Not run: a machine without a GPU, Remote Desktop.
 
 ## Taken from an earlier asset pipeline, left out
 
@@ -23,7 +27,10 @@ Not delivered to projects.
 
 ## Open
 
-- EEVEE rendering headless was not run here (Workbench only).
+None.
+
+## Out of scope (decided; revisit when a project asks)
+
 - A geometry-nodes workflow (node groups as the generator) is not covered; scripts are.
 - Whether a Blender extension (`blender_manifest.toml`) project needs more than this module (packaging, the
   extensions platform).

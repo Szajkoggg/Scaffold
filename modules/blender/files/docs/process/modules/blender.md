@@ -32,7 +32,7 @@ core agents and the asset agents for their sections below.
 - **Facts of the Python API** that agents get wrong:
   - shader nodes are found by `node.type`, never by name (names are translated);
   - enum identifiers are read (`bl_rna.properties[...].enum_items`) or tried, never assumed: they change between
-    versions (render engines especially);
+    versions. Render engines are tried: their enum leaves out engines that work (5.2 listed only EEVEE);
   - a material's colour is set on its shader node's inputs; `material.diffuse_color` only changes the viewport;
   - imported models arrive at an arbitrary scale: size and place them from their bounding box;
   - objects just loaded or moved have stale world matrices until `bpy.context.view_layer.update()`.
@@ -115,7 +115,8 @@ The tools for the core ledger's rows (`docs/HEALTH.md`), used by the `auditor`:
 
 - **Previews**: `docs/process/tools/blender/render_preview.py` renders fixed views (`front`, `three-quarter`,
   `side`, `top`) of a model framed by its bounding box, named `<model>@<view>.png` (the view key). Workbench by
-  default: the same on every machine; `--engine eevee` for materials (needs the GPU).
+  default: the same on every machine; `--engine eevee` for materials (needs a GPU; works headless; the first
+  render compiles shaders, about 14 s).
 - Beyond the principles, review scripts for: `bpy.ops` where the data API would do; node lookups by name; hard-coded
   enum identifiers; unseeded randomness; missing unit and axis statements; outputs written outside the given output
   folder; anything that would touch an open scene.

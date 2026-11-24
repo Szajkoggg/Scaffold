@@ -17,6 +17,10 @@ With typescript 6.0.3, eslint 10.15.0, typescript-eslint 8.74.0, eslint-plugin-s
 - **Found on the way**: excluding `node_modules` in dependency-cruiser's `exclude` hides every package import, so a
   rule about packages never fires. The configuration this module was drawn from had that exclude, so package rules
   there would be blind. `doNotFollow` alone is right.
+- **Vitest 5.1.1** (a minimal project, three modules, A importing B): `vitest related <files> --run --bail 1` runs the
+  tests of the changed files and of their importers (B changed: A's and B's tests), accepts test files and Windows
+  paths, needs no git repository; no matching tests or no files at all exit 0. `--bail 1` stops after the first
+  failure. About 1.5 s a call, most of it start-up.
 
 ## Taken from an earlier TypeScript project, left out
 
@@ -26,7 +30,10 @@ With typescript 6.0.3, eslint 10.15.0, typescript-eslint 8.74.0, eslint-plugin-s
 
 ## Open
 
+None.
+
+## Out of scope (decided; revisit when a project asks)
+
 - The React hooks rules (`rules-of-hooks`, `exhaustive-deps`, only those two) and JSX settings belong to `web-ui`.
-- Vitest's `related` and `--bail` were not run here (no Vite project in the test).
 - A schema validation library for boundaries (zod, valibot): not chosen by the module; the bootstrap asks if the
   project has none.

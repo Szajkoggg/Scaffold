@@ -89,7 +89,10 @@ The tools for the core ledger's rows (`docs/HEALTH.md`), used by the `auditor`:
 ## Measuring
 
 - **Bundles**: the build's output sizes, compressed, per entry; a change that adds more than a few kilobytes says why.
-- **The page**: Lighthouse in the CLI, three runs, the median; on the built site served locally, not the dev server.
+- **The page**: Lighthouse in the CLI (the Health command), three runs, the median; on the built site served
+  locally, not the dev server. Scores are 0 to 1 at `categories.<name>.score`, metrics in ms at
+  `audits['largest-contentful-paint'].numericValue`. Exit 1 is a failed run (`runtimeError` in the JSON), though the
+  file is still written: the exit code decides, not the file.
 - **Interactions**: the browser's Performance panel or a Playwright script with `performance.mark` around the action;
   long tasks over 50 ms on the main thread are the usual cause of a slow interaction.
 

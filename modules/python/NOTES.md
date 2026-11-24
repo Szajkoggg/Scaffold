@@ -28,5 +28,9 @@ With uv 0.13.4, ruff 0.17.6, mypy 2.4.1, pytest, import-linter 2.17, complexipy 
 
 ## Open
 
+None.
+
+## Out of scope (decided; revisit when a project asks)
+
 - Notebooks (Jupyter): not covered.
 - Data and ML projects (data versioning, experiment tracking, GPU notes) would be a concern module of their own.

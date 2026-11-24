@@ -1,11 +1,12 @@
 // Template from the scaffold's unity module (docs/process/modules/unity.md, "Review").
-// UNTESTED until first used in a project: copy it into a runtime folder of the Unity project (for example
-// Assets/Scripts/Tools/HeadlessCapture.cs), verify it once, and from then on the copy is the project's own.
+// Verified under URP (Unity 6000.6, D3D12); not yet under HDRP. Copy it into a runtime folder of the Unity project
+// (for example Assets/Scripts/Tools/HeadlessCapture.cs); from then on the copy is the project's own.
 //
 // Takes one picture from a player without a window:
 //   <Player>.exe -batchmode -capture tmp/shots/<view-key>.png [-captureWidth 1440] [-captureHeight 900]
 //                [-captureCamera "<GameObject name>"] [-captureFrames 30] -logFile tmp/shots/<view-key>.log
-// -batchmode keeps the window away; never add -nographics (rendering a camera without graphics crashes).
+// -batchmode keeps the window away; never add -nographics (no graphics device: the picture would be flat grey, so
+// the capture refuses with exit 3).
 // The project sets up the view itself (scene, seed, camera position) from its own arguments before the capture.
 using System;
 using System.Collections;
@@ -48,6 +49,13 @@ public sealed class HeadlessCapture : MonoBehaviour
 
     IEnumerator Start()
     {
+        if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
+        {
+            Debug.LogError("[HeadlessCapture] no graphics device (-nographics?); nothing written");
+            Application.Quit(3);
+            yield break;
+        }
+
         for (var i = 0; i < settleFrames; i++)
             yield return null;
 
