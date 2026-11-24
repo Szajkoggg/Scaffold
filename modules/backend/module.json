@@ -2,10 +2,16 @@
   "name": "backend",
   "summary": "Services and APIs: API contracts, database migrations, security checklist, observability.",
   "kind": "concern",
-  "status": "partial",
+  "status": "ready",
   "requires": [],
   "suggests": [],
   "detect": [],
   "seed": [],
-  "health": []
+  "health": [
+    {
+      "check": "API contract",
+      "covers": "The contract against the endpoints served: undocumented, unused, deprecated past their date",
+      "every": "3 months"
+    }
+  ]
 }

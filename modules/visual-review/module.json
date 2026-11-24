@@ -7,5 +7,11 @@
   "suggests": [],
   "detect": [],
   "seed": [],
-  "health": []
+  "health": [
+    {
+      "check": "Visual references",
+      "covers": "Look guide and reference pictures still current; captures repeatable",
+      "every": "3 months"
+    }
+  ]
 }

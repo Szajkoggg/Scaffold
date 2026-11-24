@@ -12,8 +12,9 @@ Updated: 2026-11-24
 - **Core**: rules, nine principles, sessions, plans, research, documentation with its checker, health, eight
   agent roles with model and effort, six plan templates.
 - **Modules ready** (templates run against real tools): `unity`, `dotnet`, `typescript`, `blender`, `web-ui`,
-  `python`. **Partial** (agents and main rules, not every section the core agents read): `visual-review`,
-  `backend`, `release`, `asset-pipeline`.
+  `python`; and the concern modules `release` (with a release plan template) and `backend`, whose commands come
+  from the stack modules. **Partial**: `visual-review` (no review-sheet generator) and `asset-pipeline` (a contract
+  template, no validator); both wait for a project that needs them (their `NOTES.md`, "Open").
 - **Workstation**: personal rules, skills (`scaffold`, `scaffold-propose`, `grill-me`), status line, environment
   variables; installed on the first workstation.
 - **Wrap-up guard**: a core hook (`.claude/hooks/wrap_up_guard.py`) tells the agent to wrap up at 90 % context,
@@ -27,11 +28,8 @@ Updated: 2026-11-24
 1. **Use it on real projects**: scaffold a new project, align an existing one, run an update. Note every friction:
    fix it here, or let the project propose it (`playbooks/propose.md`).
    Watch the wrap-up guard fire in a live session.
-2. **Complete the partial modules**:
-   - `visual-review`: Checks, Diagnosing, Health sections; a review-sheet generator.
-   - `backend`: the stack-independent sections (Checks for API contracts and migrations).
-   - `release`: a release plan template.
-   - `asset-pipeline`: a contract template and a validator skeleton.
+2. **Build the waiting parts with the first project that needs them**: the review-sheet generator
+   (`visual-review`) and an asset validator (`asset-pipeline`).
 3. **Settle the open points** listed under "Open" in each module's `NOTES.md` (e.g. the Unity capture template under
    URP, `unity test --affected`, EEVEE headless, Lighthouse, Vitest `related`).
 4. **Ideas, not decided**:

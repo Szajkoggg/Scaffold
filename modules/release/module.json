@@ -2,7 +2,7 @@
   "name": "release",
   "summary": "Libraries and tools others install: versioning, changelog, release checklist.",
   "kind": "concern",
-  "status": "partial",
+  "status": "ready",
   "requires": [],
   "suggests": [],
   "detect": [
@@ -11,5 +11,11 @@
     }
   ],
   "seed": [],
-  "health": []
+  "health": [
+    {
+      "check": "Releases",
+      "covers": "\"Unreleased\" against the changes since the last tag; deprecations past their removal",
+      "every": "3 months"
+    }
+  ]
 }

@@ -3,6 +3,32 @@
 **Summary:** Changes to how something looks are judged by pictures: the same views before and after, taken under the
 same conditions, judged by an independent critic, and shown to the user on a sheet readable on a phone.
 
+## Checks
+
+The look has no command check: pictures are judged (Review). What can be checked before they are:
+
+- Every view the change touches has a pair with the same key, the "before" taken from the base commit.
+- Both pictures of a pair have the same pixel size; a pair that differs in size is taken again, not compared.
+- The pictures come from the stack module's capture command (e.g. `web-ui`'s browser capture, `unity`'s headless
+  capture, `blender`'s render), run in one go for the whole set.
+
+## Diagnosing
+
+- **A pair differs where nothing changed**: the conditions differ: data, seed, time of day, an animation frame, fonts
+  not loaded yet, window scale or display scaling, GPU or driver. Take both again in one run before believing it.
+- **Two runs on one commit differ**: unseeded randomness, animations not paused, content loaded after the picture was
+  taken. Fix the capture, not the judgement.
+- **The critic and the user disagree**: the user decides; the reason goes into the look guide (`LOOK.md`) so the next
+  round knows it.
+
+## Health
+
+The tools for this module's ledger row, used by the `auditor`:
+
+| Check | Tool |
+|---|---|
+| Visual references | the look guide and reference pictures against what the user accepted lately; pictures of views that no longer exist removed; two capture runs on one commit give the same pictures |
+
 ## Review
 
 - **Every change to the look** gets pictures of fixed views, before and after. A view has a **key** naming what it

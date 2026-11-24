@@ -18,8 +18,34 @@ and a release prepared by the `release-auditor` and published only by the user.
 
 ## Releasing
 
+- A release is a plan from `docs/process/templates/release.md`: audit, close the gaps, bump, check the package,
+  hand over.
 - The `release-auditor` prepares it: the version bump, the changelog section, the breaking changes found.
 - The user decides; tagging and publishing are done only when the user asks, in that session.
+
+## Checks
+
+- **Each change**: a user-visible change has its line under "Unreleased" in the same commit (the reviewer checks it).
+- **Each release**: the package as the registry receives it, installed in a clean folder and used the way the README
+  says (the template's step 4). What it holds: `npm pack --dry-run`, `dotnet pack` then the `.nupkg` opened as a
+  zip, `python -m build` then the wheel listed (`unzip -l`).
+
+## Diagnosing
+
+- **A user is broken by an upgrade**: `git diff <old tag>..<new tag>` over the public interface finds the change;
+  it was breaking if the changelog did not warn them. Add the missing line and what to do, and decide with the user
+  whether a fix release restores the old behaviour.
+- **The published package differs from the repository**: list what was packed (above); the usual causes are the
+  ignore or include rules of the packer (`files` in `package.json`, `.npmignore`, the project file, `MANIFEST.in`) and
+  generated files not built before packing.
+
+## Health
+
+The tools for this module's ledger row, used by the `auditor`:
+
+| Check | Tool |
+|---|---|
+| Releases | "Unreleased" in `CHANGELOG.md` against `git log <last tag>..HEAD`: user-visible changes without a line; deprecations past the release that was to remove them |
 
 ## Agents
 

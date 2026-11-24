@@ -9,3 +9,9 @@ Not delivered to projects: design notes for writing the module.
 - Validation script per contract; previews rendered for review by the user.
 - Texture generation: tool choice, seeds and prompts recorded with the output so it can be regenerated.
 - Agents to consider: asset-builder, asset-integrator. Source: an earlier game project's asset contract, request and receipt documents and agents.
+
+## Open
+
+- The validator skeleton waits for a project with a real consumer: its rules are the contract's, and a skeleton
+  without one would be placeholders. The first one goes into the module as an example (glTF plus a headless
+  Blender script is the likeliest).

@@ -13,8 +13,9 @@ When unsure, ask in one line: "This is about N steps; shall I write a plan?"
 
 ## Writing one
 
-1. Pick the closest template in `templates/` (feature, bugfix, refactor, spike, performance, health-check); copy it
-   to `docs/plans/YYYY-MM-DD-<slug>.md` and list it in `docs/plans/README.md`.
+1. Pick the closest template in `templates/` (feature, bugfix, refactor, spike, performance, health-check, and
+   those the modules add, e.g. release); copy it to `docs/plans/YYYY-MM-DD-<slug>.md` and list it in
+   `docs/plans/README.md`.
 2. Read enough of the code to make the steps real: name files and modules, not intentions.
 3. Steps are **small**: each ends with the checks passing and a commit, and could be reviewed on its own.
 4. Each step has **Done when**: criteria someone else could check (a test, a measurement, a behaviour).

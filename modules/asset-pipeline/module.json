@@ -20,5 +20,11 @@
     }
   ],
   "seed": [],
-  "health": []
+  "health": [
+    {
+      "check": "Assets",
+      "covers": "Deliveries against the current contract; provenance and credits; largest assets",
+      "every": "3 months"
+    }
+  ]
 }

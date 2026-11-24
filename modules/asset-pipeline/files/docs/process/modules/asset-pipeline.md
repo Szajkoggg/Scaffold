@@ -28,6 +28,35 @@ models the service, prompt and settings.
 - **Paid generation** (AI model services) is the user's decision each time; check the service's terms for
   commercial use when the asset is for a product.
 
+## Checks
+
+- **Validation**: the contract's script over a delivery before it is offered: the assets changed while working, all
+  of them for the full check; its command in `AGENTS.md`, "Commands". The exit code decides; each failure names the
+  asset, the rule, the value found and the one expected.
+- **The validator reads the file as the consumer does**: the format first (for glTF the Khronos glTF Validator), then
+  the contract's rules on top: scale, triangle counts, names, texture sizes (with the `blender` module, a script
+  run headless: `"$BLENDER" -b -P <validate.py> -- <file>`).
+- **Provenance**: every asset file has its record; a file without one is a failure.
+- A new contract starts from `docs/process/templates/asset-contract.md`.
+
+## Diagnosing
+
+- **Wrong size or turned in the consumer**: units and axes on export against import (FBX: unit scale and applied
+  transforms; glTF is metres and +Y up by its specification). Send one reference cube through the whole path.
+- **Textures too dark, washed out or bumpy the wrong way**: colour space (normal, roughness and metal maps are
+  non-colour data) and the normal-map convention (OpenGL or DirectX: the green channel is flipped).
+- **Right in the preview, wrong in the consumer**: the preview is not the consumer's renderer; compare with a
+  picture taken in the consumer.
+- **A regenerated asset differs**: the record misses a setting (model version, seed, sampler); add it.
+
+## Health
+
+The tools for this module's ledger row, used by the `auditor`:
+
+| Check | Tool |
+|---|---|
+| Assets | every delivered asset validated against the current contract version (those meeting an older one listed); files without provenance; credits the licences require; the largest assets and textures against their budgets |
+
 ## Review
 
 - Every delivery is validated against the contract (a script where possible) before it is offered.
