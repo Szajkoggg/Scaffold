@@ -20,8 +20,10 @@ are"; below it is `<project>`.
 - **Assets keep their GUIDs**: never move, rename or delete an asset through the file system without its `.meta`;
   better, move it through the Editor or an `AssetDatabase` editor script. A `.meta` is always committed with its
   asset.
-- **Scenes and prefabs are changed by editor scripts** (`unity run --command`, or a static method run in batchmode),
-  not by hand-editing their YAML, except a trivial value change. References break silently otherwise.
+- **Scenes and prefabs are changed by editor scripts**, not by hand-editing their YAML, except a trivial value
+  change: a `[CliCommand]` static method run with `unity run . --command <name>` (with or without an open Editor;
+  about 1 s when one is open), or a static method run with `unity run . -- -executeMethod Class.Method` (Editor
+  closed). Both exit 6 when the method throws. References break silently otherwise.
 - **Tuning values live in ScriptableObjects or settings**, not literals in code (principle 1); the user tunes them.
 - **The Editor version** is the one in `<project>/ProjectSettings/ProjectVersion.txt`; changing it is the user's
   decision. Never `--allow-install` (it downloads an Editor) without asking.
@@ -132,7 +134,7 @@ The tools for the core ledger's rows (`docs/HEALTH.md`), used by the `auditor`:
 
 | Check | Tool |
 |---|---|
-| Packages | `Packages/manifest.json` against the latest compatible versions. No CLI command for this is confirmed yet: with an Editor open, look for one with `unity command --query package`; otherwise ask the user to check the Package Manager's Updates list |
+| Packages | `Packages/manifest.json` against the latest compatible versions. No CLI command lists updates: `unity run . --command package.list --format json -- --scope all` gives the installed versions (no latest version) to compare against each package's changelog; or ask the user to check the Package Manager's Updates list |
 | Editor version | `ProjectVersion.txt` against the current LTS of its line (`unity releases`); upgrading is the user's decision |
 | Compiler warnings | Count in a batchmode compile log; a rising count is a finding |
 | Tests | Slowest tests from the results report; flaky ones from `--retries` runs |
@@ -154,6 +156,9 @@ The tools for the core ledger's rows (`docs/HEALTH.md`), used by the `auditor`:
   picture in batchmode; with `-nographics` there is no graphics device and the picture comes out flat grey while the
   run exits 0 (the template refuses with exit 3). The same render into a texture works in an Editor batchmode static
   method.
+- **A batchmode player renders no camera by itself**: the template renders the camera every settle frame, so
+  streaming and auto-exposure settle; HDRP needs about 600 frames (its default there) or the picture is white. Exit
+  0 alone does not prove a picture: the template fails with exit 4 when the picture is flat.
 - Views are fixed (scene, camera, seed, settings) so a before and an after are comparable (`visual-review`).
 - Beyond the principles, review for: allocations in `Update` and other per-frame code; `Find`/`GetComponent` in
   per-frame code; editor-only APIs outside `#if UNITY_EDITOR` or an Editor assembly; serialized field renames
