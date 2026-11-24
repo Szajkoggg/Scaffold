@@ -16,12 +16,17 @@ Updated: 2026-11-24
   `backend`, `release`, `asset-pipeline`.
 - **Workstation**: personal rules, skills (`scaffold`, `scaffold-propose`, `grill-me`), status line, environment
   variables; installed on the first workstation.
+- **Wrap-up guard**: a core hook (`.claude/hooks/wrap_up_guard.py`) tells the agent to wrap up at 90 % context,
+  reading the fill the workstation status line writes to `<temp>/claude-context/`. Modules can ship a
+  `settings.json`, merged into the project's settings on apply and update. Tested with synthetic readings; not yet
+  seen firing in a live session.
 - **Proposals**: GitHub issues labelled `proposal`, none yet.
 
 ## Next
 
 1. **Use it on real projects**: scaffold a new project, align an existing one, run an update. Note every friction:
    fix it here, or let the project propose it (`playbooks/propose.md`).
+   Watch the wrap-up guard fire in a live session.
 2. **Complete the partial modules**:
    - `visual-review`: Checks, Diagnosing, Health sections; a review-sheet generator.
    - `backend`: the stack-independent sections (Checks for API contracts and migrations).
