@@ -74,5 +74,4 @@ A project's own rules go in its `AGENTS.md`, in a section named after the proces
 
 ## Status
 
-`core` is written, with seven agents. visual-review, backend, release and asset-pipeline are partial (their agents and main rules); the stack modules and web-ui are stubs (their `NOTES.md` says what each should bring). Workstation: personal
-skills (`grill-me`, `scaffold`), personal rules, the status line.
+Where the scaffold stands and what comes next: [STATUS.md](STATUS.md).

@@ -3,6 +3,8 @@
 Rules for working on the scaffold itself. Rules for projects made from it are in `core/files/AGENTS.md`. The
 layout and the ownership model are in `README.md`.
 
+- **`STATUS.md` first**: where the scaffold stands and what is next. Rewrite it (a snapshot, never appended) at the
+  end of a working session.
 - **Generic content only.** Nothing in `core/` or a module may name a specific project, person or machine path
   outside `{{placeholders}}`. Examples name kinds of things, not the user's projects.
 - **The text of a workflow lives once**: process documents in `core/files/docs/process/` (or a module's
