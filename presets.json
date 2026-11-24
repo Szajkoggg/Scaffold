@@ -1,0 +1,61 @@
+{
+  "minimal": {
+    "summary": "Core only, for anything that fits no other preset.",
+    "modules": []
+  },
+  "game-unity": {
+    "summary": "A Unity game.",
+    "modules": [
+      "unity",
+      "visual-review"
+    ]
+  },
+  "game-unity-assets": {
+    "summary": "A Unity game that also makes its own assets.",
+    "modules": [
+      "unity",
+      "visual-review",
+      "asset-pipeline",
+      "blender"
+    ]
+  },
+  "asset-studio": {
+    "summary": "Asset and texture production with Blender and scripts, for other projects.",
+    "modules": [
+      "python",
+      "blender",
+      "asset-pipeline",
+      "visual-review"
+    ]
+  },
+  "webapp": {
+    "summary": "A TypeScript web app with a frontend and a server.",
+    "modules": [
+      "typescript",
+      "web-ui",
+      "visual-review",
+      "backend"
+    ]
+  },
+  "dotnet-service": {
+    "summary": "A C#/.NET service or API.",
+    "modules": [
+      "dotnet",
+      "backend"
+    ]
+  },
+  "ts-tool": {
+    "summary": "A TypeScript library or CLI.",
+    "modules": [
+      "typescript",
+      "release"
+    ]
+  },
+  "python-tool": {
+    "summary": "A Python library, CLI or scripts.",
+    "modules": [
+      "python",
+      "release"
+    ]
+  }
+}

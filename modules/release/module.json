@@ -1,0 +1,15 @@
+{
+  "name": "release",
+  "summary": "Libraries and tools others install: versioning, changelog, release checklist.",
+  "kind": "concern",
+  "status": "partial",
+  "requires": [],
+  "suggests": [],
+  "detect": [
+    {
+      "glob": "CHANGELOG.md"
+    }
+  ],
+  "seed": [],
+  "health": []
+}

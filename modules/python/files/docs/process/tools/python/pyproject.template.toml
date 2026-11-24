@@ -1,0 +1,67 @@
+# Template from the scaffold's python module (docs/process/modules/python.md, "Repository setup").
+# The bootstrap merges these tables into the project's pyproject.toml, fills the {{...}} values, and the result is the
+# project's own. Correctness, not style (docs/process/code.md, "Static analysis"): no formatter, no import order.
+
+[project]
+name = "{{name}}"
+version = "0.1.0"
+requires-python = ">={{python version, e.g. 3.12}}"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff", "mypy", "pytest", "import-linter"]
+
+[tool.ruff]
+extend-exclude = ["tmp"]
+
+[tool.ruff.lint]
+select = [
+  "F",       # pyflakes: undefined names, unused imports and variables
+  "E9",      # syntax errors
+  "E722",    # bare except
+  "B",       # bugbear: mutable defaults, raise without from (the cause is lost), late-bound loop variables, ...
+  "BLE",     # catching Exception blindly
+  "S",       # bandit: eval, shell=True, unsafe pickle/yaml, SQL built from strings, HTTP without a timeout
+  "ASYNC",   # blocking calls inside async functions (principle 3)
+  "DTZ",     # datetimes without a time zone
+  "PLE",     # pylint errors
+  "PGH003",  # a blanket "type: ignore" (name the error code)
+  "PGH004",  # a blanket "noqa" (name the rule)
+  "RUF006",  # an asyncio task nobody keeps: it can be collected mid-run
+  "RUF100",  # an unused noqa: a suppression that outlived its reason
+  "ANN401",  # Any in an annotation (principle 2)
+  "T100",    # a debugger call left in
+]
+ignore = [
+  "S101",  # assert is fine in tests; code must not validate with assert (python -O strips it)
+  "S311",  # random is right for simulation and generation; secrets use the secrets module (Review)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "ANN401"]
+
+[tool.mypy]
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool", "possibly-undefined"]
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-q", "--strict-markers", "--strict-config", "-m", "not probe"]
+markers = [
+  "slow: left out of the quick check (-m 'not slow and not probe')",
+  "probe: a measurement harness, never in the suite; run by name with -m probe",
+]
+xfail_strict = true
+filterwarnings = ["error"]  # a warning fails the test: deprecations are found while they are still warnings
+
+# Boundaries from AGENTS.md, "Rules the code keeps": one contract each (import-linter, `lint-imports`).
+[tool.importlinter]
+root_package = "{{package}}"
+
+[[tool.importlinter.contracts]]
+name = "{{e.g. the core does not import the interface}}"
+type = "forbidden"
+source_modules = ["{{package}}.core"]
+forbidden_modules = ["{{package}}.ui"]

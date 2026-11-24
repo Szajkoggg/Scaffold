@@ -1,0 +1,14 @@
+{
+  "name": "blender",
+  "summary": "Blender driven by headless scripts in one loud, reproducible way; the live Blender and its MCP server only for the user's open scene or paid services.",
+  "kind": "stack",
+  "status": "ready",
+  "requires": [],
+  "suggests": ["asset-pipeline", "python"],
+  "detect": [
+    {"glob": "**/*.blend"},
+    {"glob": "blender_manifest.toml"}
+  ],
+  "seed": [],
+  "health": []
+}

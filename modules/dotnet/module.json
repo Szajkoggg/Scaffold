@@ -1,0 +1,24 @@
+{
+  "name": "dotnet",
+  "summary": "C# and .NET: nullable on, correctness analyzers (bugs fail the build, the rest counted), NUnit, quiet test runs; the rules for C# shared with Unity.",
+  "kind": "stack",
+  "status": "ready",
+  "requires": [],
+  "suggests": [],
+  "detect": [
+    {
+      "glob": "**/*.csproj"
+    },
+    {
+      "glob": "**/*.sln"
+    },
+    {
+      "glob": "**/*.slnx"
+    },
+    {
+      "glob": "global.json"
+    }
+  ],
+  "seed": [],
+  "health": []
+}

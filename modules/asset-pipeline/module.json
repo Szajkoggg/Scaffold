@@ -1,0 +1,24 @@
+{
+  "name": "asset-pipeline",
+  "summary": "Producing assets (models, textures, generated images) for a consumer: asset contract, requests and receipts, validation, previews for review.",
+  "kind": "concern",
+  "status": "partial",
+  "requires": [],
+  "suggests": [
+    "blender",
+    "visual-review"
+  ],
+  "detect": [
+    {
+      "glob": "**/*.fbx"
+    },
+    {
+      "glob": "**/*.glb"
+    },
+    {
+      "glob": "**/*.gltf"
+    }
+  ],
+  "seed": [],
+  "health": []
+}

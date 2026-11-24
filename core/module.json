@@ -1,0 +1,22 @@
+{
+  "name": "core",
+  "summary": "What every project gets: AGENTS.md, the documentation structure, the process documents, session skills, the reviewer.",
+  "kind": "core",
+  "status": "ready",
+  "requires": [],
+  "detect": [],
+  "seed": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".gitattributes",
+    ".gitignore",
+    ".claude/settings.json",
+    "docs/*.md",
+    "docs/design/.gitkeep",
+    "docs/ideas/README.md",
+    "docs/log/README.md",
+    "docs/plans/README.md",
+    "docs/plans/done/.gitkeep"
+  ],
+  "health": []
+}

@@ -1,0 +1,28 @@
+{
+  "//": [
+    "Template from the scaffold's typescript module (docs/process/modules/typescript.md, 'Repository setup').",
+    "For code Node runs directly (Node 24+ strips the types): no build step. Copied by the bootstrap as the",
+    "project's base tsconfig; from then on it is the project's own. Frontends built by a bundler use",
+    "tsconfig.bundler.json instead."
+  ],
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "skipLibCheck": true
+  }
+}

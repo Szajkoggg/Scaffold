@@ -1,0 +1,20 @@
+{
+  "name": "unity",
+  "summary": "Unity projects: the unity CLI, headless by default, assets moved with their .meta, scenes changed by editor scripts, asmdef boundaries checked.",
+  "kind": "stack",
+  "status": "ready",
+  "requires": [
+    "dotnet"
+  ],
+  "suggests": [
+    "visual-review",
+    "asset-pipeline"
+  ],
+  "detect": [
+    {
+      "glob": "**/ProjectSettings/ProjectVersion.txt"
+    }
+  ],
+  "seed": [],
+  "health": []
+}

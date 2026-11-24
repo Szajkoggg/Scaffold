@@ -1,0 +1,7 @@
+# Scratch and caches
+tmp/
+__pycache__/
+*.pyc
+
+# Local tool state
+.claude/settings.local.json

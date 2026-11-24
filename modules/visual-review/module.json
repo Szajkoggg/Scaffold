@@ -1,0 +1,11 @@
+{
+  "name": "visual-review",
+  "summary": "Changes judged by pictures: before/after shots of the same views, an independent visual critic, review sheets readable on a phone.",
+  "kind": "concern",
+  "status": "partial",
+  "requires": [],
+  "suggests": [],
+  "detect": [],
+  "seed": [],
+  "health": []
+}

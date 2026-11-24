@@ -1,0 +1,41 @@
+<!--
+  Template from the scaffold's dotnet module (docs/process/modules/dotnet.md, "Repository setup").
+  The bootstrap copies it to the repository root (or the .NET solution's folder) and fills in the versions;
+  from then on the copy is the project's own.
+
+  Versions: the latest stable of each package, found with
+    dotnet package search <package> --exact-match
+  With central package management (Directory.Packages.props), move the versions there.
+
+  Which rules fail the build is set in .editorconfig (severity = error), the one place for rules; here only the
+  nullable warnings, which have no single id there.
+-->
+<Project>
+
+  <PropertyGroup>
+    <!-- Principle 2: type safety is not worn away. -->
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
+
+    <!-- .NET's default rule set (mostly correctness); "recommended" adds naming and design rules that are style. -->
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- Lets the IDE rules raised in .editorconfig (unused members and parameters) report on build.
+         Only the rules .editorconfig raises report; no style rule is raised. -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- Not all warnings fail the build: the analyzers' defaults include style rules. New code adds no warnings
+         (dotnet.md, "Rules"); the warning count is a health measure. -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- async void, blocking waits on async code (principle 3). -->
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="{{version}}" PrivateAssets="all" />
+    <!-- Cognitive complexity (S3776) and bug-finding rules. -->
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="{{version}}" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

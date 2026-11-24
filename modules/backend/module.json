@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "summary": "Services and APIs: API contracts, database migrations, security checklist, observability.",
+  "kind": "concern",
+  "status": "partial",
+  "requires": [],
+  "suggests": [],
+  "detect": [],
+  "seed": [],
+  "health": []
+}

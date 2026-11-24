@@ -1,0 +1,26 @@
+{
+  "skills_dirs": [".claude/skills", ".codex/skills"],
+  "personal_files": [".claude/CLAUDE.md", ".codex/AGENTS.md"],
+  "files": [
+    {"from": "claude/statusline.py", "to": ".claude/statusline.py"},
+    {"from": "claude/statusline-command.sh", "to": ".claude/statusline-command.sh"}
+  ],
+  "settings": [
+    {"from": "claude/settings.json", "to": ".claude/settings.json"}
+  ],
+  "env": {
+    "DISABLE_TELEMETRY": {
+      "value": "true",
+      "why": "MCP for Blender (and other tools that honour it) send no usage telemetry"
+    },
+    "BLENDER": {
+      "find": [
+        "C:/Program Files/Blender Foundation/Blender */blender.exe",
+        "/Applications/Blender.app/Contents/MacOS/Blender",
+        "/usr/bin/blender",
+        "/snap/bin/blender"
+      ],
+      "why": "the path of blender.exe for headless runs (modules/blender: \"$BLENDER\" -b ...); the newest install found"
+    }
+  }
+}

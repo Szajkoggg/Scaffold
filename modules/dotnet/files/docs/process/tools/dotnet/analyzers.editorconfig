@@ -1,0 +1,48 @@
+# Template from the scaffold's dotnet module (docs/process/modules/dotnet.md, "Repository setup").
+# The bootstrap appends it to the repository's .editorconfig (creating one with "root = true" if there is none);
+# from then on it is the project's own.
+#
+# Correctness, not style (docs/process/code.md, "Static analysis"). "error" fails the build: only rules that find
+# real bugs. "warning" is reported and counted (a health measure); new code adds none. A rule that clashes with the
+# project's conventions is set to "none" below "Project decisions", with the reason.
+
+[*.cs]
+
+# Errors and exceptions (principle 5: a failure says what and where)
+dotnet_diagnostic.CA2200.severity = error      # "throw ex;" resets the stack trace: use "throw;"
+dotnet_diagnostic.S108.severity = warning      # empty block (an empty catch swallows the error)
+dotnet_diagnostic.S2486.severity = warning     # exception caught and ignored
+dotnet_diagnostic.CA1806.severity = warning    # a result that must be used is ignored
+
+# Likely bugs
+dotnet_diagnostic.S2234.severity = error       # arguments passed in a different order than the parameters
+dotnet_diagnostic.S2681.severity = error       # several statements under an if/for without braces
+dotnet_diagnostic.S1244.severity = warning     # == on floating-point values
+dotnet_diagnostic.S1854.severity = warning     # a value assigned and never used
+
+# Async and blocking (principle 3: hot paths do not block)
+dotnet_diagnostic.VSTHRD100.severity = error   # async void
+dotnet_diagnostic.VSTHRD002.severity = error   # synchronous wait on async work (.Result, .Wait())
+dotnet_diagnostic.VSTHRD110.severity = warning # an async result is not awaited
+dotnet_diagnostic.CA2012.severity = error      # ValueTask used wrongly
+dotnet_diagnostic.CA2016.severity = warning    # CancellationToken not passed on
+dotnet_diagnostic.CA1849.severity = warning    # synchronous call where an async one exists
+
+# Resources
+dotnet_diagnostic.CA2000.severity = warning    # disposable not disposed
+
+# Dead code (principle 4: nothing without a reason)
+dotnet_diagnostic.IDE0051.severity = warning   # unused private member
+dotnet_diagnostic.IDE0052.severity = warning   # private member assigned but never read
+dotnet_diagnostic.IDE0060.severity = warning   # unused parameter
+
+# Size trigger (docs/process/code.md, "Size triggers"): a second look, not a limit
+dotnet_diagnostic.S3776.severity = warning     # cognitive complexity above 15
+
+# Project decisions: rules set to none because they clash with this project's conventions, each with why.
+# (The bootstrap fills this from the first build's warning counts, docs/process/modules/dotnet.md.)
+
+# Test projects: rules that fight test code
+[**/*Tests/**.cs]
+dotnet_diagnostic.CA2000.severity = suggestion
+dotnet_diagnostic.CA1849.severity = suggestion

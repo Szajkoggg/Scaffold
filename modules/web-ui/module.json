@@ -1,0 +1,33 @@
+{
+  "name": "web-ui",
+  "summary": "Web interfaces, any framework: logic in tested plain modules, colours from tokens, texts in one catalogue, every view captured at fixed widths and checked for layout faults and accessibility.",
+  "kind": "concern",
+  "status": "ready",
+  "requires": [],
+  "suggests": [
+    "visual-review",
+    "typescript"
+  ],
+  "detect": [
+    {
+      "glob": "**/vite.config.*"
+    },
+    {
+      "glob": "**/next.config.*"
+    },
+    {
+      "glob": "**/nuxt.config.*"
+    },
+    {
+      "glob": "**/svelte.config.*"
+    },
+    {
+      "glob": "**/angular.json"
+    },
+    {
+      "glob": "index.html"
+    }
+  ],
+  "seed": [],
+  "health": []
+}

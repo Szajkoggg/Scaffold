@@ -1,0 +1,10 @@
+{
+  "ignore_paths": [
+    {"path": "docs/asmdef-rules.json", "why": "written by the bootstrap from the project's assemblies"},
+    {"path": "Assets/", "why": "Unity's folder, inside the Unity project, which may not be the repository root"},
+    {"path": "ProjectSettings/", "why": "Unity's folder, inside the Unity project"},
+    {"path": "Packages/manifest.json", "why": "inside the Unity project, which may not be the repository root"},
+    {"path": "Packages/packages-lock.json", "why": "inside the Unity project, which may not be the repository root"},
+    {"path": "Assets/Scripts/Tools/HeadlessCapture.cs", "why": "an example destination for the capture template"}
+  ]
+}

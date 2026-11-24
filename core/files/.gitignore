@@ -1,0 +1,9 @@
+# Scratch, check logs, review material. Nothing that must survive goes here.
+tmp/
+
+# Local tool state
+.claude/settings.local.json
+
+# Secrets
+.env
+.env.*

@@ -1,0 +1,16 @@
+{
+  "name": "typescript",
+  "summary": "TypeScript on Node: strict types without unexplained escapes, ESLint correctness rules (all errors), dependency-cruiser boundaries, knip, one test runner.",
+  "kind": "stack",
+  "status": "ready",
+  "requires": [],
+  "suggests": [],
+  "detect": [
+    {"glob": "tsconfig.json"},
+    {"glob": "*/tsconfig.json"},
+    {"glob": "packages/*/tsconfig.json"},
+    {"glob": "apps/*/tsconfig.json"}
+  ],
+  "seed": [],
+  "health": []
+}
