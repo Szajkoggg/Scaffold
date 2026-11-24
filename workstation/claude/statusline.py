@@ -3,7 +3,7 @@
 Reads the status line JSON on stdin (https://code.claude.com/docs/en/statusline.md) and prints two lines:
 
     ~/Code/project | main ●3 ↑1 | wt feature-x | Opus 5.5 · medium | cache 4m
-    ctx ███░░░░░░░ 31%   5h █████│░░░░ 48% ↻2h05m   7d ██░│░░░░░░ 21% ↻3d4h
+    ctx ███░░░░░░░ 31%   5h █████│░░░░ 48% ↻ 2h05m   7d ██░│░░░░░░ 21% ↻ 3d4h
 
 - Colours run evenly from green through yellow and orange to red in OKLCH (equally bright, readable on light and
   dark backgrounds): each bar cell has the colour of its position, the percentage the colour of its value.
@@ -99,7 +99,7 @@ def bar(label: str, percent, resets_at=None) -> tuple[str, str]:
         if left > 0:
             passed = 1 - min(1.0, left / WINDOWS[label])
             cells.insert(round(passed * BAR_WIDTH), f"{RESET}│")  # the pace marker: the time already passed
-            extra = f" {GREY}↻{duration(left)}{RESET}"
+            extra = f" {GREY}↻ {duration(left)}{RESET}"
     if label == "ctx" and p >= WRAP_UP_AT:
         extra = f" {colour(p)}wrap up?{RESET}"
     return f"{GREY}{label}{RESET} {''.join(cells)}{RESET} {colour(p)}{p:.0f}%{RESET}", extra
