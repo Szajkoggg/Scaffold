@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap_up_guard.py\""
+            "command": "\"${SCAFFOLD_PYTHON:-python}\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap_up_guard.py\""
           }
         ]
       }
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap_up_guard.py\""
+            "command": "\"${SCAFFOLD_PYTHON:-python}\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/wrap_up_guard.py\""
           }
         ]
       }

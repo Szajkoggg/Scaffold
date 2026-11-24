@@ -20,6 +20,10 @@
     }
   ],
   "env": {
+    "SCAFFOLD_PYTHON": {
+      "value": "{{PYTHON}}",
+      "why": "the Python that ran the workstation setup, for project hooks (python may not be on PATH, or be python3)"
+    },
     "DISABLE_TELEMETRY": {
       "value": "true",
       "why": "MCP for Blender (and other tools that honour it) send no usage telemetry"

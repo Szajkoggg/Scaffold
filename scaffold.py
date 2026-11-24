@@ -33,6 +33,7 @@ HOME = Path(__file__).resolve().parent
 MANIFEST = ".scaffold/manifest.json"
 INCOMING = ".scaffold/incoming"
 WORKSTATION_MANIFEST = ".scaffold/workstation.json"
+PYTHON = Path(sys.executable).as_posix()  # the interpreter the workstation records for the status line and hooks
 SKIP_DIRS = {".git", "node_modules", "Library", "Temp", "obj", "bin", "tmp", ".venv", "venv", "__pycache__",
              "Logs", "UserSettings", ".scaffold", "dist", "build"}
 BLOCK = "<!-- scaffold:{name} -->"
@@ -300,21 +301,44 @@ def edit_file(sync: Sync, rel: str, fn, what: str):
         sync.note("*", rel, msg)
 
 
-def merge_settings(sync: Sync, rel: str, fragments: list[Path]):
+def drop_stale(base: dict, old: dict, new: dict, path="") -> list[str]:
+    """Remove from base the list items an earlier merge added (old) that the scaffold no longer ships (new)."""
+    changed = []
+    for k, v in old.items():
+        key = f"{path}{k}"
+        if isinstance(v, dict) and isinstance(base.get(k), dict):
+            changed += drop_stale(base[k], v, new.get(k) if isinstance(new.get(k), dict) else {}, key + ".")
+        elif isinstance(v, list) and isinstance(base.get(k), list):
+            keep = new.get(k) if isinstance(new.get(k), list) else []
+            stale = [item for item in v if item not in keep and item in base[k]]
+            if stale:
+                base[k] = [item for item in base[k] if item not in stale]
+                changed.append(key)
+    return changed
+
+
+def merge_settings(sync: Sync, rel: str, fragments: list[Path]) -> dict:
+    """Merge the modules' settings fragments into the project's settings; returns what the scaffold now ships, recorded
+    in the manifest so the next update can remove entries it no longer ships."""
+    shipped: dict = {}
+    for f in fragments:
+        deep_merge(shipped, json.loads(f.read_text(encoding="utf-8")))
     target = sync.root / rel
     try:
         current = json.loads(target.read_text(encoding="utf-8-sig")) if target.exists() else {}
     except ValueError as e:
         sync.note("!", rel, f"not valid JSON ({e}): scaffold settings not merged")
-        return
-    changed = []
-    for f in fragments:
-        changed += deep_merge(current, json.loads(f.read_text(encoding="utf-8")))
-    if changed:
+        return (sync.old or {}).get("settings", {})
+    removed = drop_stale(current, (sync.old or {}).get("settings", {}), shipped)
+    added = deep_merge(current, shipped)
+    if removed or added:
         if not sync.dry:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
-        sync.note("*", rel, f"settings merged: {', '.join(sorted(set(changed)))}")
+        what = [f"merged {', '.join(sorted(set(added)))}"] if added else []
+        what += [f"removed old entries from {', '.join(sorted(set(removed)))}"] if removed else []
+        sync.note("*", rel, "settings " + "; ".join(what))
+    return shipped
 
 
 # ---------------------------------------------------------------- project commands
@@ -347,8 +371,7 @@ def project_sync(root: Path, names: list[str], args, title: str):
     # Claude Code settings the modules bring (hooks, permissions): merged into the project's seed settings on every
     # apply and update, appending what is missing and keeping the project's own entries.
     fragments = [m.path / "settings.json" for m in (mods[n] for n in order) if (m.path / "settings.json").exists()]
-    if fragments:
-        merge_settings(sync, ".claude/settings.json", fragments)
+    shipped_settings = merge_settings(sync, ".claude/settings.json", fragments) if fragments else {}
 
     # Health ledger rows the modules bring (added once; the project owns them after).
     rows = [(n, h) for n in order for h in mods[n].health]
@@ -373,6 +396,7 @@ def project_sync(root: Path, names: list[str], args, title: str):
         "scaffold": {"version": scaffold_version(), "applied": (sync.old or {}).get("scaffold", {}).get("applied", today()),
                      "updated": today()},
         "modules": order,
+        "settings": shipped_settings,
     })
     stubs = [n for n in order if mods[n].status == "stub"]
     sync.print(title)
@@ -530,7 +554,8 @@ def cmd_workstation(args):
 
     for item in conf.get("settings", []):
         target = home / item["to"]
-        fragment = json.loads((ws / item["from"]).read_text(encoding="utf-8").replace("{{HOME}}", home.as_posix()))
+        text = (ws / item["from"]).read_text(encoding="utf-8")
+        fragment = json.loads(text.replace("{{HOME}}", home.as_posix()).replace("{{PYTHON}}", PYTHON))
         current = json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
         changed = deep_merge(current, fragment)
         if changed:
@@ -570,7 +595,7 @@ def user_env_get(name: str) -> str | None:
 def set_environment(env: dict, sync: Sync, args) -> None:
     """User environment variables: on Windows written for the user (setx); elsewhere printed for the shell profile."""
     for name, spec in env.items():
-        value = spec.get("value") if "value" in spec else find_newest(spec.get("find", []))
+        value = spec["value"].replace("{{PYTHON}}", PYTHON) if "value" in spec else find_newest(spec.get("find", []))
         if value is None:
             sync.note("?", f"env {name}", f"not set: nothing found ({spec.get('why', '')})")
             continue

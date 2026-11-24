@@ -36,7 +36,7 @@ A module (and `core`) is a folder with:
 | Path | Delivered to the project as |
 |---|---|
 | `module.json` | Not delivered: name, summary, kind, status, requires, suggests, detect (signs it fits), seed, health rows |
-| `settings.json` | Claude Code settings (hooks, permissions) merged into the project's `.claude/settings.json` on every apply and update: missing entries appended, the project's own kept |
+| `settings.json` | Claude Code settings (hooks, permissions) merged into the project's `.claude/settings.json` on every apply and update: missing entries appended, entries it no longer ships removed (recorded in the manifest), the project's own kept |
 | `files/**` | The same path in the project |
 | `skills/<name>/` | `.claude/skills/<name>/` and `.agents/skills/<name>/` (Claude Code and Codex) |
 | `agents/<name>.md` | `.claude/agents/<name>.md` |

@@ -1,7 +1,7 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "python \"{{HOME}}/.claude/statusline.py\"",
+    "command": "\"{{PYTHON}}\" \"{{HOME}}/.claude/statusline.py\"",
     "refreshInterval": 60
   }
 }

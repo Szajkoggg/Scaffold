@@ -1,9 +1,10 @@
 """Claude Code hook: when the context passes WRAP_UP_GUARD_AT percent (default 90), tell the agent once to finish the
 step in hand and run the wrap-up (docs/process/session.md), before compaction or a full context loses the session.
 
-Registered in .claude/settings.json for UserPromptSubmit and PostToolUse. Hooks are not told how full the context
-is; the status line is. The workstation status line writes `used_percentage` for each session to
-<temp>/claude-context/<session_id>.json, and this hook reads it. Without that file (another status line, or none)
+Registered in .claude/settings.json for UserPromptSubmit and PostToolUse, run by $SCAFFOLD_PYTHON (set by the
+workstation setup) or else `python`. Hooks are not told how full the context is; the status line is. The workstation
+status line writes `used_percentage` for each session to <temp>/claude-context/<session_id>.json, and this hook
+reads it. Without that file (another status line, or none)
 the hook does nothing. Codex has no equivalent: its hooks see no context fill.
 
 The warning is given once per session and armed again when the context drops 10 points below the threshold
