@@ -42,6 +42,12 @@ Applied once by the bootstrap; the files are the project's afterwards.
   solution's folder, with the analyzer versions filled in (`dotnet package search <package> --exact-match`).
 - **`.editorconfig`**: `docs/process/tools/dotnet/analyzers.editorconfig` appended (with `root = true` at the top
   if the file is new).
+- **An existing codebase with findings** gets a baseline instead of lowered rules (Checks): in
+  `Directory.Build.props`, `<ErrorLog>$(MSBuildThisFileDirectory)tmp/checks/$(MSBuildProjectName).sarif,version=2.1</ErrorLog>`
+  (the build does not create `tmp/checks/`; the check commands do), then
+  `python docs/process/tools/dotnet/check_baseline.py analyzer-baseline.tsv tmp/checks/*.sarif --init` at the root,
+  and the baseline committed. A rule set to `error` that has findings in it is lowered to `warning` until they are
+  gone.
 - **`global.json`** pinning the SDK major version the project uses, with `"rollForward": "latestFeature"`.
 - **Central package management** (`Directory.Packages.props`, `ManagePackageVersionsCentrally`) when the solution
   has more than one project: one version per package (principle 6).
@@ -79,6 +85,10 @@ Applied once by the bootstrap; the files are the project's afterwards.
 - Slow tests carry `[Category("Slow")]`; the quick level adds `&Category!=Slow` to its filter, the full level runs
   them.
 - Warnings: report the count; a rise is a finding (Rules).
+- **With a baseline** (an existing codebase, Repository setup), the full check adds
+  `python docs/process/tools/dotnet/check_baseline.py analyzer-baseline.tsv tmp/checks/*.sarif` after the build:
+  a finding above its baseline count fails (new code adds none), and so does a count below it, until `--shrink`
+  lowers it in the same commit as the fix, so fixed findings cannot return. It never raises an entry.
 
 ## Diagnosing
 

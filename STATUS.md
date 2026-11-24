@@ -32,8 +32,8 @@ Updated: 2026-11-24
    (`visual-review`) and an asset validator (`asset-pipeline`).
 3. **Open points**: none left to probe. Settled on 2026-11-24: EEVEE headless, Unity capture under URP and HDRP,
    `unity test --affected`, the `unity` CLI's package listing and editor scripts, Lighthouse, Vitest `related`,
-   analyzers inside Unity (not adopted), Microsoft.Testing.Platform. To decide: ship the .NET shrink-only baseline
-   (`modules/dotnet/NOTES.md`, "Open").
+   analyzers inside Unity (not adopted), Microsoft.Testing.Platform. The .NET module ships a shrink-only
+   warning baseline (`check_baseline.py`) for existing codebases.
 4. **Ideas, not decided**:
    - a language-independent code check (source files past their size trigger, `WORKAROUND:` markers);
    - running subagents on the status line, through hooks (undocumented, so fragile);

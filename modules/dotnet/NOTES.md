@@ -29,15 +29,15 @@ Not delivered to projects.
 - **Microsoft.Testing.Platform** (NUnit3TestAdapter 6.3.1 with `EnableNUnitRunner`, the TrxReport and HangDump
   extensions 2.5.3): the commands in the module's Checks and Diagnosing. Without the `global.json` runner entry,
   SDK 10 and later refuse a project switched to it.
-- **Shrink-only baseline**: a ~50-line script reading the build's SARIF (`<ErrorLog>...sarif,version=2.1</ErrorLog>`;
+- **Shrink-only baseline**, shipped as `tools/dotnet/check_baseline.py`: a ~50-line script reading the build's SARIF (`<ErrorLog>...sarif,version=2.1</ErrorLog>`;
   csc does not create the folder) into rule, file and count, compared with a committed TSV: 258 lines for 877
-  findings (173 with S1104 off and S3776 left out); a planted warning shows as new, a fixed one as stale.
+  findings (173 with S1104 off and S3776 left out); a planted warning shows as new, a fixed one as stale. The shipped script was then tested on a
+  build of the templates (Sonar 10.37, VS Threading 18.12.1): init, new, stale, shrink, a shrink refused while a new
+  finding exists, and a fixed finding coming back.
 
 ## Open
 
-- **A baseline that can only shrink**, to be decided whether to ship it (as `tools/dotnet/check_baseline.py`): tried
-  once (below) and it works. It keeps the rules strict for new code while old findings can only go, per file, which
-  lowering severities in `.editorconfig` cannot; errors in the baseline still have to be lowered to warnings.
+None.
 
 ## Out of scope (decided; revisit when a project asks)
 

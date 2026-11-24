@@ -52,5 +52,5 @@ def main() -> None:
 if __name__ == "__main__":
     try:
         main()
-    except Exception:  # noqa: BLE001 - a guard must never break the session
+    except Exception:  # noqa: BLE001, S110 - a guard must never break the session
         pass
