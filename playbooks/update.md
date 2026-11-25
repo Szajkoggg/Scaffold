@@ -15,6 +15,8 @@ new module needs one.
      project's `AGENTS.md` named after the process document, e.g. "## Review"), not back into the owned file. If the
      change is an improvement every project should have, propose it (`propose.md`).
    - `?` a seed file the scaffold changed: seeds belong to the project; mention noteworthy changes only.
+   - `i` something to do by hand with nothing in `.scaffold/incoming/` (a file the script expected is missing, an
+     environment variable it could not set): do it or tell the user.
 3. **After merging**: delete `.scaffold/incoming/` and run `update` again, until it reports no conflicts.
 4. **New modules**: run `scaffold.py detect <folder>`; if it finds modules the project does not use, or a module
    in use is no longer a stub, mention it in one line with a recommendation. Adding one is

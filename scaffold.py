@@ -257,13 +257,15 @@ class Sync:
             gi.write_text("incoming/\n", encoding="utf-8")
 
     def print(self, title: str):
-        order = {"!": 0, "?": 1, "-": 2, "~": 3, "+": 4, "*": 5}
+        # "!" and "?" have a version in the incoming folder to merge; "i" needs the user's attention but has none.
+        order = {"!": 0, "?": 1, "i": 2, "-": 3, "~": 4, "+": 5, "*": 6}
         for mark, path, text in sorted(self.report, key=lambda r: (order.get(r[0], 9), r[1])):
             print(f"{mark} {path}" + (f"  {text}" if text else ""))
-        counts = {m: sum(1 for r in self.report if r[0] == m) for m in "+~-!?*"}
+        counts = {m: sum(1 for r in self.report if r[0] == m) for m in "+~-!?*i"}
+        attention = f", {counts['i']} to do yourself" if counts["i"] else ""
         print(f"{title}{' (dry run, nothing written)' if self.dry else ''}: {counts['+']} added, "
               f"{counts['~']} updated, {counts['-']} removed, {counts['!']} conflicts, "
-              f"{counts['?']} to merge by hand, {counts['*']} existing files edited")
+              f"{counts['?']} to merge by hand, {counts['*']} existing files edited{attention}")
         if counts["!"] or counts["?"]:
             print(f"Merge each file listed above with its version in {self.incoming_rel}/, delete that folder, "
                   "then run the same command again.")
@@ -286,7 +288,7 @@ def set_block(text: str, name: str, body: str, heading: str | None = None) -> tu
 def edit_file(sync: Sync, rel: str, fn, what: str):
     p = sync.root / rel
     if not p.exists():
-        sync.note("?", rel, f"missing: {what} not written")
+        sync.note("i", rel, f"missing: {what} not written")
         return
     raw = p.read_bytes()
     text = raw.decode("utf-8-sig")
@@ -597,7 +599,7 @@ def set_environment(env: dict, sync: Sync, args) -> None:
     for name, spec in env.items():
         value = spec["value"].replace("{{PYTHON}}", PYTHON) if "value" in spec else find_newest(spec.get("find", []))
         if value is None:
-            sync.note("?", f"env {name}", f"not set: nothing found ({spec.get('why', '')})")
+            sync.note("i", f"env {name}", f"not set: nothing found ({spec.get('why', '')})")
             continue
         if args.home:
             sync.note("*", f"env {name}", f"skipped with --home (would be {value})")
@@ -605,7 +607,7 @@ def set_environment(env: dict, sync: Sync, args) -> None:
         if user_env_get(name) == value:
             continue
         if os.name != "nt":
-            sync.note("?", f"env {name}", f"add to your shell profile: export {name}=\"{value}\"")
+            sync.note("i", f"env {name}", f"add to your shell profile: export {name}=\"{value}\"")
             continue
         if not args.dry_run:
             subprocess.run(["setx", name, value], check=True, capture_output=True)
