@@ -11,6 +11,22 @@
     {
       "from": "claude/statusline.py",
       "to": ".claude/statusline.py"
+    },
+    {
+      "from": "claude/themes/graphite.json",
+      "to": ".claude/themes/graphite.json"
+    },
+    {
+      "from": "claude/themes/paper.json",
+      "to": ".claude/themes/paper.json"
+    },
+    {
+      "from": "claude/themes/honey.json",
+      "to": ".claude/themes/honey.json"
+    },
+    {
+      "from": "claude/themes/vaporwave.json",
+      "to": ".claude/themes/vaporwave.json"
     }
   ],
   "settings": [

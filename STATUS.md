@@ -15,8 +15,9 @@ Updated: 2026-11-24
   `python`; and the concern modules `release` (with a release plan template) and `backend`, whose commands come
   from the stack modules. **Partial**: `visual-review` (no review-sheet generator) and `asset-pipeline` (a contract
   template, no validator); both wait for a project that needs them (their `NOTES.md`, "Open").
-- **Workstation**: personal rules, skills (`scaffold`, `scaffold-propose`, `grill-me`), status line, environment
-  variables; installed on the first workstation.
+- **Workstation**: personal rules, skills (`scaffold`, `scaffold-propose`, `grill-me`), status line, Claude Code
+  themes (Graphite, Paper, Honey, Vaporwave; pick one with `/theme`), environment variables; installed on two
+  workstations.
 - **Wrap-up guard**: a core hook (`.claude/hooks/wrap_up_guard.py`) tells the agent to wrap up at 90 % context,
   reading the fill the workstation status line writes to `<temp>/claude-context/`. Modules can ship a
   `settings.json`, merged into the project's settings on apply and update. Tested with synthetic readings; not yet
