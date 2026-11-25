@@ -567,9 +567,44 @@ def cmd_workstation(args):
             sync.note("*", item["to"], f"settings set: {', '.join(changed)}")
 
     set_environment(conf.get("env", {}), sync, args)
+    extra = {}
+    if "terminal_schemes" in conf:
+        extra["terminal_schemes"] = merge_terminal_schemes(sync, ws, conf["terminal_schemes"])
 
-    sync.save({"scaffold": {"version": scaffold_version(), "home": HOME.as_posix(), "updated": today()}})
+    sync.save({"scaffold": {"version": scaffold_version(), "home": HOME.as_posix(), "updated": today()}, **extra})
     sync.print("workstation")
+
+
+def merge_terminal_schemes(sync: Sync, ws: Path, spec: dict) -> list[str]:
+    """Windows Terminal colour schemes into each settings.json found: a scheme of the same name is replaced, one an
+    earlier run shipped and the scaffold no longer does is removed, the user's own are kept. The file is never created
+    (Windows Terminal writes it on its first start); returns the names shipped, for the manifest."""
+    schemes = json.loads((ws / spec["from"]).read_text(encoding="utf-8"))
+    names = [s["name"] for s in schemes]
+    stale = set((sync.old or {}).get("terminal_schemes", [])) - set(names)
+    found = [rel for rel in spec["to"] if (sync.root / rel).exists()]
+    if not found:
+        if os.name == "nt":
+            sync.note("i", "Windows Terminal", "no settings.json found: colour schemes not added "
+                                               "(start Windows Terminal once, then run this again)")
+        return names
+    for rel in found:
+        target = sync.root / rel
+        try:
+            data = json.loads(target.read_text(encoding="utf-8-sig"))
+        except ValueError as e:
+            sync.note("i", rel, f"not plain JSON ({e}): colour schemes not added; copy them from "
+                                f"workstation/{spec['from']} by hand")
+            continue
+        current = data.get("schemes", [])
+        kept = [s for s in current if s.get("name") not in set(names) | stale]
+        if kept + schemes == current:
+            continue
+        data["schemes"] = kept + schemes
+        if not sync.dry:
+            target.write_text(json.dumps(data, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
+        sync.note("*", rel, f"colour schemes set: {', '.join(names)}")
+    return names
 
 
 def find_newest(patterns: list[str]) -> str | None:
