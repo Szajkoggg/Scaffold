@@ -28,6 +28,9 @@ What is installed is listed in `workstation/workstation.json`; the personal rule
    settings and environment variables to load; MCP servers started by a tool see a new variable only after that
    tool restarts.
 
+For the Codex CLI footer alone, use python scaffold.py workstation --codex-footer-only. The full setup also
+installs this preset. Existing footer selections are preserved. Merging into existing TOML requires Python 3.11+.
+
 ## When the user wants something added
 
 A personal setting, skill or rule the user wants on every computer goes into `workstation/` in the scaffold

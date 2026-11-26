@@ -35,6 +35,7 @@
       "to": ".claude/settings.json"
     }
   ],
+  "codex_footer": ["model-with-reasoning", "current-dir", "git-branch", "branch-changes", "context-used", "five-hour-limit", "weekly-limit"],
   "terminal_schemes": {
     "from": "terminal/schemes.json",
     "to": [

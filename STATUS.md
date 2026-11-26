@@ -5,7 +5,7 @@ proposal flow are built and tested in scratch folders. It has not yet been used 
 
 <!-- A snapshot, rewritten at the end of each working session; history is in the git log. Under ~60 lines. -->
 
-Updated: 2026-11-24
+Updated: 2026-11-26
 
 ## Now
 
@@ -18,7 +18,8 @@ Updated: 2026-11-24
 - **Workstation**: personal rules, skills (`scaffold`, `scaffold-propose`, `grill-me`), status line, Claude Code
   themes (Graphite, Paper, Honey, Vaporwave; pick one with `/theme`) with matching Windows Terminal colour schemes
   (merged by name into its `settings.json`; the profile's scheme is the user's choice), environment variables;
-  installed on two workstations.
+  installed on two workstations. The native Codex CLI footer defaults to this workstation's seven selected fields,
+  starting with model and effort and including branch changes. Setup preserves existing footer selections.
 - **Wrap-up guard**: a core hook (`.claude/hooks/wrap_up_guard.py`) tells the agent to wrap up at 90 % context,
   reading the fill the workstation status line writes to `<temp>/claude-context/`. Modules can ship a
   `settings.json`, merged into the project's settings on apply and update. Tested with synthetic readings; not yet

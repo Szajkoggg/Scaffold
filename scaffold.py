@@ -526,12 +526,62 @@ def deep_merge(base: dict, add: dict, path="") -> list[str]:
     return changed
 
 
+def install_codex_footer(sync: Sync, items: list[str]):
+    """Seed the native footer once, preserving choices made later with /statusline."""
+    rel = ".codex/config.toml"
+    path = sync.root / rel
+    original = path.read_bytes() if path.exists() else b""
+    newline = "\r\n" if b"\r\n" in original else "\n"
+    entry = "status_line = " + json.dumps(items) + newline
+    text = original.decode("utf-8")
+    section = "[tui]" + newline + entry
+    if text:
+        try:
+            import tomllib
+        except ImportError:
+            sync.note("i", rel, "use Python 3.11+ to merge the footer into existing TOML")
+            return
+        try:
+            config = tomllib.loads(text)
+        except tomllib.TOMLDecodeError as exc:
+            sync.note("i", rel, f"could not read TOML: {exc}")
+            return
+        tui = config.setdefault("tui", {})
+        if "status_line" in tui:
+            sync.note("=", rel, "existing Codex footer kept")
+            return
+        tui["status_line"] = items
+        # Validate the complete result before writing, including for quoted or inline tables.
+        proposals = [text + newline + section, "tui." + entry + text]
+        for header in re.finditer(r"""(?m)^[ \t]*\[[ \t]*(?:tui|"tui"|'tui')[ \t]*\][ \t]*(?:#[^\r\n]*)?\r?$""", text):
+            pos = header.end()
+            pos += int(text[pos:pos + 1] == "\n")
+            prefix = text[:pos]
+            proposals.append(prefix + ("" if prefix.endswith("\n") else newline) + entry + text[pos:])
+        for proposal in proposals:
+            try:
+                if tomllib.loads(proposal) == config:
+                    section = proposal
+                    break
+            except tomllib.TOMLDecodeError:
+                continue
+        else:
+            sync.note("i", rel, "could not safely insert the footer; select it with /statusline")
+            return
+    sync.write(rel, section.encode("utf-8"))
+    sync.note("*", rel, "Codex footer preset added")
+
+
 def cmd_workstation(args):
     home = Path(args.home).expanduser().resolve() if args.home else Path.home()
     ws = HOME / "workstation"
     conf = json.loads((ws / "workstation.json").read_text(encoding="utf-8"))
     sync = Sync(home, WORKSTATION_MANIFEST, ".scaffold/incoming-workstation", args.dry_run, args.force,
                 {"SCAFFOLD_HOME": HOME.as_posix()})
+    install_codex_footer(sync, conf["codex_footer"])
+    if args.codex_footer_only:
+        sync.print("workstation")
+        return
     deliveries = []
     for rel, src in files_under(ws / "skills"):
         for skills_dir in conf["skills_dirs"]:
@@ -669,6 +719,7 @@ def main(argv=None):
         p.set_defaults(fn=fn)
     p = sub.add_parser("workstation")
     p.add_argument("--home", help="home folder to install into (default: yours)")
+    p.add_argument("--codex-footer-only", action="store_true", help="install only the native Codex CLI footer")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--force", action="store_true")
     p.set_defaults(fn=cmd_workstation)
