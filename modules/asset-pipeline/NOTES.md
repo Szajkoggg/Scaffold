@@ -15,3 +15,5 @@ Not delivered to projects: design notes for writing the module.
 - The validator skeleton waits for a project with a real consumer: its rules are the contract's, and a skeleton
   without one would be placeholders. The first one goes into the module as an example (glTF plus a headless
   Blender script is the likeliest).
+- The module document has no `## Sources` yet: written with the first project, naming the exchange formats'
+  specifications (glTF, FBX, texture formats) and the versions of the exporter and importer on each side.

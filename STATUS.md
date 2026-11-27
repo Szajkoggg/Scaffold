@@ -59,8 +59,8 @@ None.
   `noqa: S603, S607`). Two lines from before 2026-11-27 are past 120 characters (`scaffold.py`, the status line's
   docstring).
 - Audited 2026-11-27: agent wrappers match their roles and "Runs at" tables, skills cite existing sections, no
-  personal names in delivered content. Open from it: `release` has no `## Review`; `visual-review` and
-  `asset-pipeline` have no `## Sources`.
+  personal names in delivered content. `visual-review` and `asset-pipeline` have no `## Sources` yet (their
+  `NOTES.md`, "Open").
 - **Gap**: `scaffold.py` has no automated tests; it was tested by hand (apply, update, status, detect, workstation
   into a scratch home, the freshness and downgrade checks against throwaway clones). Worth a small test suite
   before larger changes to it.

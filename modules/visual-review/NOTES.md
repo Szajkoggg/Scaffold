@@ -14,3 +14,5 @@ Not delivered to projects: design notes for writing the module.
 - The review-sheet generator (one column, labelled, before above after, for a phone) waits for a project with a
   working capture: its input is the capture's output (file names by view key), so it is built against a real one.
   Both captures now run (`web-ui`'s browser capture; `unity`'s `HeadlessCapture.cs`, verified under URP).
+- The module document has no `## Sources` yet: written with the first project, naming the capture tools' installed
+  versions and help, the project's capture scripts, and the reference pictures.

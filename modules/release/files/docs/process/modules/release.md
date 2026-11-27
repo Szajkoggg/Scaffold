@@ -25,7 +25,7 @@ and a release prepared by the `release-auditor` and published only by the user.
 
 ## Checks
 
-- **Each change**: a user-visible change has its line under "Unreleased" in the same commit (the reviewer checks it).
+- **Each change**: a user-visible change has its line under "Unreleased" in the same commit (the reviewer checks it, "Review").
 - **Each release**: the package as the registry receives it, installed in a clean folder and used the way the README
   says (the template's step 4). What it holds: `npm pack --dry-run`, `dotnet pack` then the `.nupkg` opened as a
   zip, `python -m build` then the wheel listed (`unzip -l`).
@@ -46,6 +46,13 @@ The tools for this module's ledger row, used by the `auditor`:
 | Check | Tool |
 |---|---|
 | Releases | "Unreleased" in `CHANGELOG.md` against `git log <last tag>..HEAD`: user-visible changes without a line; deprecations past the release that was to remove them |
+
+## Review
+
+Beyond the principles, look for: a user-visible change without its line under "Unreleased", or a line written about
+the code rather than for users; a change to the public interface (above) not marked as breaking, or one that could
+have been made without breaking; a version bumped by hand outside a release; a deprecation without the release that
+removes it.
 
 ## Agents
 
