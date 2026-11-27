@@ -18,6 +18,8 @@ implementation, and output kept short.
 - New behaviour gets a test; a bug fix starts with a test that fails because of the bug.
 - Tests pin **behaviour**, not implementation: a refactor should not need them changed.
 - Tests are deterministic: no real network, clock or randomness without a seed; no calls to AI models.
+- Tests never touch the user's real data (files, databases, repositories, accounts): they work on fixtures or
+  temporary copies.
 - A flaky test is a bug: note it in `docs/HEALTH.md` and do not retry it until it passes.
 - A slow test is a cost every session pays: note it when it is past the budget in `docs/WORKING.md`. Slow tests are
   marked (a category or tag) so the quick level can leave them out and the full level runs them.

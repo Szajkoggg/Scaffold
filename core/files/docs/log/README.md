@@ -10,7 +10,8 @@ entries you need; never a log end to end.
 
   ```
   ## YYYY-MM-DD: <what, in a few words>
-  What was done and why; what was decided and by whom; numbers where they exist. Links: plan, commits.
+  What is now true, first. Then why: what was decided and by whom, the alternatives rejected and why, in the words
+  someone would search for; numbers where they exist. Links: plan, commits.
   ```
 
 - **Short**: a few lines. The detail is in the commit, the plan or the design; the entry says where.

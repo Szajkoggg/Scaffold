@@ -42,6 +42,10 @@ A module (and `core`) is a folder with:
 | `agents/<name>.md` | `.claude/agents/<name>.md` |
 | `NOTES.md` | Not delivered: design notes while the module is a stub |
 
+Hooks in a `settings.json` (observed in Claude Code, 2026-11): skills are loaded before `SessionStart` hooks run, so
+a hook cannot change the skills of its own session; `SessionEnd` hooks are killed silently a second or two into the
+shutdown, so nothing that matters runs there.
+
 A module's rules go in `files/docs/process/modules/<name>.md`, listed in the project's `AGENTS.md` (Modules block);
 its own agents' role files in `files/docs/process/roles/<agent>.md` with the Claude wrapper in `agents/`; its
 docs-checker rules in `files/docs/process/check-docs.d/<name>.json`; its health checks in `module.json`'s `health`,

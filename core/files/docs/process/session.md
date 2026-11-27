@@ -37,7 +37,8 @@ one-line notice; `WRAP_UP_GUARD_AT` changes the threshold, `WRAP_UP_GUARD_LOG=1`
    decisions, results, things dropped and noticed; check what it wrote. Otherwise write it yourself:
    - `docs/STATUS.md`: rewrite Now, Next, Open questions, Health. Keep it a snapshot.
    - The active plan: tick what is done, note deviations; move it to `plans/done/` with its outcome if finished.
-   - `docs/log/<topic>.md`: an entry if something was decided or finished.
+   - `docs/log/<topic>.md`: an entry if something was decided or finished: what is now true first, then why and
+     what was rejected.
    - `docs/HEALTH.md`: things noticed and not fixed, under "Noticed"; update "Last done" for any check run.
    - Design or ideas topics: decisions not yet written down.
    - If documents changed: `python docs/process/tools/check_docs.py --quiet`, and fix its errors

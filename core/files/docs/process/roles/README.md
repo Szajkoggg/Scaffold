@@ -37,5 +37,7 @@ Modules add roles of their own; each is listed in its module's document (`AGENTS
   the role asks for. Read its report back from its output.
 - **Model and effort**: the "Runs at" column (above, and in each module's Agents table). The Claude wrappers set them (`model`, `effort`, and a `color` for the
   task list); in another tool, pick the matching model tier and reasoning effort for the run.
+- **Before a decision rests on a role's finding**, open the file and line it cites: a report is a lead, not
+  evidence.
 - **The brief** gives what the role's "Inputs" section asks for, and never the caller's own conclusions when the role
   is meant to judge independently (reviewer, critics).

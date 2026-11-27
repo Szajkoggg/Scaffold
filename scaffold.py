@@ -13,6 +13,7 @@ Python 3.9+, standard library only.
 
 apply, update and workstation first fetch this repository and stop if the clone is behind its upstream, so another
 computer never installs an old scaffold without noticing; --stale-ok goes on anyway. No network: a note, no stop.
+update also stops when the project was updated from a scaffold commit this clone does not have.
 
 A project records what it got in .scaffold/manifest.json (commit it). Files the scaffold owns are replaced on update
 while untouched; a file edited in the project is never overwritten: the new version is written to
@@ -108,6 +109,24 @@ def check_clone(args) -> None:
         fix = f"run: git -C {where} pull --ff-only"
     sys.exit(f"the scaffold clone is {behind} commit(s) behind {upstream}; {fix}. Then run this again "
              "(--stale-ok to go on with the old version).")
+
+
+def missing_version(recorded: str) -> str | None:
+    """The project's recorded scaffold version when this clone does not contain it: the project was updated from a
+    newer scaffold (another computer), and an update from here would take it back. None when it is contained or
+    cannot be told (unversioned, not a git clone)."""
+    version = recorded.removesuffix("-dirty")
+    if not version or version in ("unversioned", "?"):
+        return None
+    try:
+        git("rev-parse", "--git-dir")
+    except (OSError, subprocess.SubprocessError):
+        return None
+    try:
+        git("merge-base", "--is-ancestor", f"{version}^{{commit}}", "HEAD")
+        return None
+    except (OSError, subprocess.SubprocessError):
+        return version
 
 
 def today() -> str:
@@ -471,7 +490,12 @@ def cmd_update(args):
     if not (root / MANIFEST).exists():
         sys.exit(f"{root} has no {MANIFEST}: use apply")
     old = json.loads((root / MANIFEST).read_text(encoding="utf-8"))
-    print(f"scaffold {old.get('scaffold', {}).get('version', '?')} -> {scaffold_version()}")
+    recorded = old.get("scaffold", {}).get("version", "?")
+    newer = missing_version(recorded)
+    if newer and not args.stale_ok:
+        sys.exit(f"the project was updated from scaffold {newer}, which this clone does not have: an update from "
+                 f"here would take it back. Pull the scaffold ({HOME.as_posix()}) first (--stale-ok to go on).")
+    print(f"scaffold {recorded} -> {scaffold_version()}")
     project_sync(root, old.get("modules", []), args, "update")
 
 
@@ -486,6 +510,10 @@ def cmd_status(args):
     print(f"modules: {', '.join(man.get('modules', []))}")
     print(f"scaffold: {sc.get('version')} (applied {sc.get('applied')}, updated {sc.get('updated')}); "
           f"available: {scaffold_version()}")
+    newer = missing_version(str(sc.get("version", "")))
+    if newer:
+        print(f"! the project was updated from scaffold {newer}, which this clone does not have: pull the scaffold "
+              "before an update")
     edited, missing = [], []
     for rel, rec in man.get("files", {}).items():
         p = root / rel
