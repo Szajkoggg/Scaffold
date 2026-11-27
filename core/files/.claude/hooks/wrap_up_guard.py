@@ -82,7 +82,7 @@ def log(data: dict, decision: str) -> None:
 def main() -> None:
     data = {}
     try:
-        data = json.load(sys.stdin)
+        data = json.loads(sys.stdin.buffer.read().decode("utf-8"))  # UTF-8 whatever the code page
         decision = decide(data)
     except Exception as error:  # noqa: BLE001 - a guard must never break the session
         decision = f"error: {type(error).__name__}: {error}"

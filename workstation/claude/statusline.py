@@ -21,8 +21,10 @@ Reads the status line JSON on stdin (https://code.claude.com/docs/en/statusline.
 
 Truecolor where the terminal says so (COLORTERM, Windows Terminal), else the 256-colour cube;
 STATUSLINE_COLORS=truecolor|256 overrides. Values that are missing are left out, never shown as zero. Standard
-library only.
+library only. git is started by name with fixed arguments and no shell (the noqa markers).
 """
+from __future__ import annotations
+
 import json
 import math
 import os
@@ -30,7 +32,7 @@ import re
 import subprocess
 import sys
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 RESET = "\033[0m"
@@ -116,8 +118,9 @@ def bar(label: str, percent, resets_at=None) -> tuple[str, str]:
 def git_state(cwd: str) -> str:
     """Branch, changed files, commits ahead and behind, from one git call."""
     try:
-        out = subprocess.run(["git", "-C", cwd, "status", "--porcelain=v1", "--branch"],
-                             capture_output=True, text=True, timeout=2, check=True).stdout.splitlines()
+        out = subprocess.run(["git", "-C", cwd, "status", "--porcelain=v1", "--branch"],  # noqa: S603, S607
+                             capture_output=True, encoding="utf-8", errors="replace", timeout=2,
+                             check=True).stdout.splitlines()
     except (OSError, subprocess.SubprocessError):
         return ""
     if not out or not out[0].startswith("## "):
@@ -212,6 +215,7 @@ def health_state(root: Path, applied: date | None) -> str:
     if not ledger:
         return ""
     unit_days = {"day": 1, "week": 7, "month": 30, "year": 365}
+    today = datetime.now().astimezone().date()  # the local date, explicitly
     due = 0
     for row in re.findall(r"^\|(.+)\|\s*$", ledger.group(1), re.M):
         cells = [c.strip() for c in row.split("|")]
@@ -222,7 +226,7 @@ def health_state(root: Path, applied: date | None) -> str:
             continue  # the header, the separator, or a trigger instead of a period
         last = re.search(r"\d{4}-\d{2}-\d{2}", cells[3])
         since = date.fromisoformat(last.group(0)) if last else applied
-        if since and since + timedelta(days=int(period.group(1)) * unit_days[period.group(2)]) < date.today():
+        if since and since + timedelta(days=int(period.group(1)) * unit_days[period.group(2)]) < today:
             due += 1
     return f"{GREY}health{RESET} {colour(75)}{due} due{RESET}" if due else ""
 
@@ -245,8 +249,9 @@ def scaffold_state(version: str) -> str:
     if not version or version == "unversioned" or not home:
         return ""
     try:
-        count = int(subprocess.run(["git", "-C", home, "rev-list", "--count", f"{version}..HEAD"],
-                                   capture_output=True, text=True, timeout=2, check=True).stdout.strip())
+        count = int(subprocess.run(["git", "-C", home, "rev-list", "--count", f"{version}..HEAD"],  # noqa: S603, S607
+                                   capture_output=True, encoding="utf-8", errors="replace", timeout=2,
+                                   check=True).stdout.strip())
     except (OSError, subprocess.SubprocessError, ValueError):
         return ""
     return f"{GREY}scaffold{RESET} {colour(60)}↑{count}{RESET}" if count else ""
@@ -330,7 +335,7 @@ def main() -> None:
     except (AttributeError, ValueError):
         pass
     try:
-        data = json.load(sys.stdin)
+        data = json.loads(sys.stdin.buffer.read().decode("utf-8"))  # UTF-8 whatever the code page
     except (ValueError, OSError):
         data = {}
     capture = os.path.expanduser("~/.claude/statusline-capture")

@@ -8,8 +8,9 @@ Registered by the workstation setup in ~/.claude/settings.json for three events:
 - Notification: "needs your permission" when Claude Code asks for a permission; other notifications are ignored.
 
 The title is the session's folder name. SCAFFOLD_NOTIFY=0 turns it off. Shown by a PowerShell toast on Windows,
-osascript on macOS, notify-send on Linux. The hook waits for it (about 0.2 s): a detached process is killed with the
-hook's process tree. Standard library only; any failure exits quietly so a session is never blocked.
+osascript on macOS, notify-send on Linux. The hook waits for it (0.2 s warm, up to about a second cold): a detached
+process is killed with the hook's process tree. Tools are started by name with fixed arguments and no shell (the
+noqa markers). Standard library only; any failure exits quietly so a session is never blocked.
 """
 import base64
 import json
@@ -44,18 +45,19 @@ def windows_toast(title: str, body: str) -> list[str]:
 def show(title: str, body: str) -> None:
     quiet = {"stdin": subprocess.DEVNULL, "stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL, "timeout": 10}
     if sys.platform == "win32":
-        subprocess.run(windows_toast(title, body), creationflags=subprocess.CREATE_NO_WINDOW, **quiet)  # type: ignore[attr-defined]
+        flags = subprocess.CREATE_NO_WINDOW  # type: ignore[attr-defined]
+        subprocess.run(windows_toast(title, body), creationflags=flags, **quiet)  # noqa: S603
     elif sys.platform == "darwin":
-        subprocess.run(["osascript", "-e", f"display notification {json.dumps(body)} with title {json.dumps(title)}"],
-                       **quiet)
+        script = f"display notification {json.dumps(body)} with title {json.dumps(title)}"
+        subprocess.run(["osascript", "-e", script], **quiet)  # noqa: S603, S607
     else:
-        subprocess.run(["notify-send", title, body], **quiet)
+        subprocess.run(["notify-send", title, body], **quiet)  # noqa: S603, S607
 
 
 def main() -> None:
     if os.environ.get("SCAFFOLD_NOTIFY", "1") == "0":
         return
-    data = json.load(sys.stdin)
+    data = json.loads(sys.stdin.buffer.read().decode("utf-8"))  # UTF-8 whatever the code page
     event = data.get("hook_event_name")
     session = str(data.get("session_id") or "")
     turn = FOLDER / f"{session}.turn"

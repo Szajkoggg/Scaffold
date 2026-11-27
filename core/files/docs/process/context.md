@@ -20,7 +20,7 @@ Every token read is paid for again in every later turn of the session.
 - Do not re-read a file you just wrote, or re-derive what is already established in the conversation.
 - Long sessions drift: when the task changes, wrap up and suggest a fresh session rather than carrying a long history.
 
-## Tools: CLI before MCP
+## Tools
 
 Use a command-line tool or a script before an MCP server, for engines and editors too (Unity, Blender, browsers,
 databases).
@@ -41,6 +41,6 @@ databases).
 These are the project's side of the bargain; propose them when missing:
 
 - Summaries at the top of every document; indexes that repeat them.
-- Small files (`code.md`, "Scalability"; `documentation.md`, "Growth rules").
+- Small files (`code.md`, "Size triggers"; `documentation.md`, "Growth rules").
 - Module `AGENTS.md` files, so module rules load only where they apply.
 - Checks with quiet output.

@@ -15,7 +15,9 @@ them up twice.
 - Security-relevant behaviour.
 - Any claim you would hedge with "I think" or "usually".
 
-## Where to look, nearest to the truth first
+## Where to look
+
+Nearest to the truth first:
 
 1. **The project**: the installed versions (lock files, `ProjectVersion.txt`, `--version`), its code, its documents
    (`docs/`, the module documents' "Sources"), the librarian for what was decided before (`roles/librarian.md`).

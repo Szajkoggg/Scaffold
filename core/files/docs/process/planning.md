@@ -25,7 +25,7 @@ When unsure, ask in one line: "This is about N steps; shall I write a plan?"
    answers only where they disagree. A matter that is the user's by "Who decides what" (`AGENTS.md`) is asked
    outright, never left to a default.
 8. **Length**: a plan is about 50-200 lines; past ~300, split it into plans that each deliver something on their own.
-9. Show the plan to the user, offering a plan review if it is a larger one (`review.md`, "Reviewing a plan"). It is
+9. Show the plan to the user, offering a plan review when `review.md`, "Reviewing a plan", says to. It is
    approved when the user says so; `Status:` becomes `approved`. Approval accepts the defaults the user did not
    answer: write every answer into the steps or "Context" (marked "decided by the user") and empty "Open
    questions".

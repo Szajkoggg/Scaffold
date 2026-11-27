@@ -24,15 +24,16 @@ role: `roles/reviewer.md`.
 Offered in the message that shows a plan for approval (`planning.md`, "Writing one") when the plan spans sessions
 or changes data, a public interface or the architecture; for any plan on the user's request. On a yes, the reviewer
 gets the plan file alone; its fix findings are made in the plan, and its decisions go into the plan's "Open questions"
-with the reviewer's recommendation as the default.
+with the reviewer's recommendation as the default, except a matter that is the user's by "Who decides what"
+(`AGENTS.md`), which is asked outright.
 
 ## Acting on the findings
 
 - **fix** findings: make them, and list them in a line each.
 - **decision** findings: put them to the user with the options and the reviewer's recommendation; nothing is changed
   until the user answers.
-- Before acting on a finding, open its file and line: the problem is there as described. A finding that is not, or
-  that you think is wrong: say why in the report; never drop it silently.
+- Before acting on a finding, check it at its file and line (`roles/README.md`, "Calling a role"). A finding that
+  does not hold, or that you think is wrong: say why in the report; never drop it silently.
 - At most three rounds: review, fix, review again, each new round given the previous findings and what was done
   about them. Later rounds raise the bar (`roles/reviewer.md`, "Later rounds"). After the third, report what remains.
 - Report the findings to the user with what was done about each, and the reviewer's "Noticed" lines (to

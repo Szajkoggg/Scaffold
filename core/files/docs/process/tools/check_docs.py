@@ -237,7 +237,7 @@ class Checker:
         if (self.root / ".git").exists():
             try:
                 out = subprocess.run(
-                    ["git", "ls-files", "-co", "--exclude-standard", "-z"],
+                    ["git", "ls-files", "-co", "--exclude-standard", "-z"],  # noqa: S607 - git from PATH
                     cwd=self.root, capture_output=True, check=True,
                 ).stdout.decode("utf-8", "replace")
                 files = [f for f in out.split("\0") if f and (self.root / f).exists()]

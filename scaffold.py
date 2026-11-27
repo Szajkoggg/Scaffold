@@ -2,7 +2,8 @@
 """scaffold.py: the file work of the scaffold. The judgement (which modules, merging, questions) is the agent's,
 following playbooks/; this script only copies, records and updates, so the result is the same every time.
 
-Python 3.9+, standard library only.
+Python 3.9+, standard library only. Tools (git, setx) are started by name with fixed argument lists and no shell; the
+`noqa: S603, S607` markers say so to ruff.
 
     python scaffold.py list                                  modules and presets
     python scaffold.py detect   <project>                    modules whose signs the project shows
@@ -73,14 +74,16 @@ def digest(data: bytes) -> str:
 
 def scaffold_version() -> str:
     try:
-        return subprocess.run(["git", "-C", str(HOME), "describe", "--always", "--dirty", "--tags"],
-                              capture_output=True, text=True, check=True).stdout.strip() or "unversioned"
+        return subprocess.run(["git", "-C", str(HOME), "describe", "--always", "--dirty", "--tags"],  # noqa: S603, S607
+                              capture_output=True, encoding="utf-8", errors="replace",
+                              check=True).stdout.strip() or "unversioned"
     except (OSError, subprocess.CalledProcessError):
         return "unversioned"
 
 
 def git(*args: str, timeout: float = 15) -> str:
-    return subprocess.run(["git", "-C", str(HOME), *args], capture_output=True, text=True, check=True,
+    return subprocess.run(["git", "-C", str(HOME), *args],  # noqa: S603, S607
+                          capture_output=True, encoding="utf-8", errors="replace", check=True,
                           timeout=timeout).stdout.strip()
 
 
@@ -97,13 +100,18 @@ def check_clone(args) -> None:
     except (OSError, subprocess.SubprocessError):
         print(f"note: could not fetch {upstream} (offline?); the scaffold clone may be out of date")
         return
-    ahead, behind = (int(n) for n in git("rev-list", "--left-right", "--count", "HEAD...@{upstream}").split())
+    try:
+        ahead, behind = (int(n) for n in git("rev-list", "--left-right", "--count", "HEAD...@{upstream}").split())
+        dirty = bool(behind) and not ahead and bool(git("status", "--porcelain", "--untracked-files=no"))
+    except (OSError, subprocess.SubprocessError, ValueError):
+        print(f"note: could not compare the scaffold clone with {upstream}; it may be out of date")
+        return
     if not behind:
         return
     where = HOME.as_posix()
     if ahead:
         fix = f"it is also {ahead} ahead: merge or rebase by hand in {where}"
-    elif git("status", "--porcelain", "--untracked-files=no"):
+    elif dirty:
         fix = f"it has uncommitted changes: commit or stash them, then git -C {where} pull --ff-only"
     else:
         fix = f"run: git -C {where} pull --ff-only"
@@ -493,8 +501,9 @@ def cmd_update(args):
     recorded = old.get("scaffold", {}).get("version", "?")
     newer = missing_version(recorded)
     if newer and not args.stale_ok:
-        sys.exit(f"the project was updated from scaffold {newer}, which this clone does not have: an update from "
-                 f"here would take it back. Pull the scaffold ({HOME.as_posix()}) first (--stale-ok to go on).")
+        sys.exit(f"the project was updated from scaffold {newer}, which is not in this clone's history (a newer "
+                 f"scaffold: pull it in {HOME.as_posix()}; or history rewritten here since): an update could take the "
+                 "project back. --stale-ok goes on.")
     print(f"scaffold {recorded} -> {scaffold_version()}")
     project_sync(root, old.get("modules", []), args, "update")
 
@@ -512,8 +521,8 @@ def cmd_status(args):
           f"available: {scaffold_version()}")
     newer = missing_version(str(sc.get("version", "")))
     if newer:
-        print(f"! the project was updated from scaffold {newer}, which this clone does not have: pull the scaffold "
-              "before an update")
+        print(f"i the project was updated from scaffold {newer}, which is not in this clone's history: pull the "
+              "scaffold before an update (or its history was rewritten)")
     edited, missing = [], []
     for rel, rec in man.get("files", {}).items():
         p = root / rel
@@ -670,20 +679,25 @@ def cmd_workstation(args):
         edit_file(sync, rel, lambda t: (set_block(t, "personal", personal)[0], "personal rules written"),
                   "personal rules")
 
+    shipped = {}  # recorded, so the next run removes entries it shipped before and no longer ships (a new Python path)
     for item in conf.get("settings", []):
         target = home / item["to"]
         text = (ws / item["from"]).read_text(encoding="utf-8")
         fragment = json.loads(text.replace("{{HOME}}", home.as_posix()).replace("{{PYTHON}}", PYTHON))
         current = json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
+        removed = drop_stale(current, (sync.old or {}).get("settings", {}).get(item["to"], {}), fragment)
         changed = deep_merge(current, fragment)
-        if changed:
+        shipped[item["to"]] = fragment
+        if changed or removed:
             if not args.dry_run:
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text(json.dumps(current, indent=2) + "\n", encoding="utf-8")
-            sync.note("*", item["to"], f"settings set: {', '.join(changed)}")
+            what = [f"settings set: {', '.join(changed)}"] if changed else []
+            what += [f"old entries removed from {', '.join(sorted(set(removed)))}"] if removed else []
+            sync.note("*", item["to"], "; ".join(what))
 
     set_environment(conf.get("env", {}), sync, args)
-    extra = {}
+    extra = {"settings": shipped}
     if "terminal_schemes" in conf:
         extra["terminal_schemes"] = merge_terminal_schemes(sync, ws, conf["terminal_schemes"])
 
@@ -761,7 +775,7 @@ def set_environment(env: dict, sync: Sync, args) -> None:
             sync.note("i", f"env {name}", f"add to your shell profile: export {name}=\"{value}\"")
             continue
         if not args.dry_run:
-            subprocess.run(["setx", name, value], check=True, capture_output=True)
+            subprocess.run(["setx", name, value], check=True, capture_output=True)  # noqa: S603, S607
         sync.note("*", f"env {name}", f"set to {value} ({spec.get('why', '')}); new terminals and tools see it")
 
 
