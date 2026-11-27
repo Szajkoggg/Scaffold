@@ -8,7 +8,7 @@ follows the same text.
 
 | Role | Job | Writes | Runs at |
 |---|---|---|---|
-| [reviewer](reviewer.md) | Independent review of a change against the principles, rules and criteria | Nothing | main model, high |
+| [reviewer](reviewer.md) | Independent review of a change, or of a plan before approval, against the principles, rules and criteria | Nothing | main model, high |
 | [check-runner](check-runner.md) | Runs the checks and returns a short verdict | Nothing | smaller model, low |
 | [investigator](investigator.md) | Finds the cause of one failure, with evidence; does not fix | Temporary probes only | main model, high |
 | [librarian](librarian.md) | Answers what was decided, built or measured, and where, with sources | Nothing | smaller model, medium |

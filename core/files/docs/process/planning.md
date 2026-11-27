@@ -21,7 +21,8 @@ When unsure, ask in one line: "This is about N steps; shall I write a plan?"
 4. Each step has **Done when**: criteria someone else could check (a test, a measurement, a behaviour).
 5. **Stop conditions** say when to stop and ask instead of going on. Every plan keeps the standard ones.
 6. Recommend one approach; list rejected alternatives in one line each, with why.
-7. Show the plan to the user. It is approved when the user says so; `Status:` becomes `approved`.
+7. Show the plan to the user, offering a plan review if it is a larger one (`review.md`, "Reviewing a plan"). It is
+   approved when the user says so; `Status:` becomes `approved`.
 
 ## The format
 

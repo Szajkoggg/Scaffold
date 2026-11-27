@@ -27,5 +27,6 @@ nothing.
 
 - A verdict: no issues found, or the number of issues by severity (critical / high / medium / low).
 - Each issue: file and line; the attack in one or two sentences (who, what input, what effect); severity and why;
-  the fix in a sentence.
+  its kind, as `reviewer.md`, "Report", defines: **fix** (one sensible fix, in a sentence) or **decision**
+  (several ways, or a change to who may do what; the options and a recommendation).
 - What was not reviewed (code outside the diff that would need it).

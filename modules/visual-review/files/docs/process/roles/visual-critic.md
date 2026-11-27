@@ -30,6 +30,8 @@ look guide and the change's criteria. It did not build what it judges and has no
 
 - A verdict first: ready, or not ready with the number of open issues.
 - Issues ordered by how visible they are in the views that matter most: the file, where in the picture, what it
-  looks like, which reference or criterion it fails.
+  looks like, which reference or criterion it fails, and its kind, as `reviewer.md`, "Report", defines:
+  **fix** for a fault with one sensible repair (a seam, a gap, text cut short); **decision** for anything about how
+  it should look, which is the user's, with the options and a recommendation.
 - For comparisons, one line per view.
 - What is good, briefly, so it is kept.

@@ -1,6 +1,6 @@
 ---
 name: review
-description: Get an independent review of a change (a commit range, files or a plan) against the project's principles, rules and the task's criteria.
+description: Get an independent review of a change (a commit range or files) or of a plan before approval, against the project's principles, rules and the task's criteria.
 ---
 
 Follow `docs/process/review.md`, section "Asking for a review". The reviewer must not be the session that wrote the
