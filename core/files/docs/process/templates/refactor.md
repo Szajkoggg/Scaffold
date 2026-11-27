@@ -16,6 +16,11 @@ Behaviour stays exactly as it is.
 
 <The code involved; who depends on it; why now.>
 
+## Open questions
+
+<One per item: the question, then `Default:` the recommended answer. The user's answers go into the plan at approval;
+empty once approved.>
+
 ## Steps
 
 - [ ] 1. Pin the behaviour

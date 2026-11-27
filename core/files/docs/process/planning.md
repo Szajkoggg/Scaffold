@@ -21,8 +21,14 @@ When unsure, ask in one line: "This is about N steps; shall I write a plan?"
 4. Each step has **Done when**: criteria someone else could check (a test, a measurement, a behaviour).
 5. **Stop conditions** say when to stop and ask instead of going on. Every plan keeps the standard ones.
 6. Recommend one approach; list rejected alternatives in one line each, with why.
-7. Show the plan to the user, offering a plan review if it is a larger one (`review.md`, "Reviewing a plan"). It is
-   approved when the user says so; `Status:` becomes `approved`.
+7. **Open questions**: what you cannot settle goes there, each with `Default:` your recommended answer, so the user
+   answers only where they disagree. A matter that is the user's by "Who decides what" (`AGENTS.md`) is asked
+   outright, never left to a default.
+8. **Length**: a plan is about 50-200 lines; past ~300, split it into plans that each deliver something on their own.
+9. Show the plan to the user, offering a plan review if it is a larger one (`review.md`, "Reviewing a plan"). It is
+   approved when the user says so; `Status:` becomes `approved`. Approval accepts the defaults the user did not
+   answer: write every answer into the steps or "Context" (marked "decided by the user") and empty "Open
+   questions".
 
 ## The format
 
@@ -41,6 +47,9 @@ Created: YYYY-MM-DD
 
 ## Context
 <Links to design topics, ideas, issues; the facts the steps rely on.>
+
+## Open questions
+- <Question?> Default: <the recommended answer>
 
 ## Steps
 - [ ] 1. <Title>

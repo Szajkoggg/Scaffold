@@ -23,8 +23,8 @@ role: `roles/reviewer.md`.
 
 Offered in the message that shows a plan for approval (`planning.md`, "Writing one") when the plan spans sessions
 or changes data, a public interface or the architecture; for any plan on the user's request. On a yes, the reviewer
-gets the plan file alone; its fix findings are made in the plan, and its decisions are put to the user before the
-plan is approved.
+gets the plan file alone; its fix findings are made in the plan, and its decisions go into the plan's "Open questions"
+with the reviewer's recommendation as the default.
 
 ## Acting on the findings
 

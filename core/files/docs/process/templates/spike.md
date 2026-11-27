@@ -16,6 +16,11 @@ An answer to <question>, with evidence, and a recommendation. Not production cod
 
 <What is known; the options on the table; what decision waits on this.>
 
+## Open questions
+
+<One per item: the question, then `Default:` the recommended answer. The user's answers go into the plan at approval;
+empty once approved.>
+
 ## Steps
 
 - [ ] 1. Investigate

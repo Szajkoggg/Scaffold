@@ -16,6 +16,11 @@ Findings for each chosen check, with weight and size of fix; the approved fixes 
 Chosen checks (delete the rest): principles, dead code, dependencies, tests, static analysis, documentation,
 performance, security. Items from "Noticed" in docs/HEALTH.md that belong here: <list>.
 
+## Open questions
+
+<One per item: the question, then `Default:` the recommended answer. The user's answers go into the plan at approval;
+empty once approved.>
+
 ## Steps
 
 - [ ] 1. Survey

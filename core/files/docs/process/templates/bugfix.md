@@ -15,6 +15,11 @@ Created: YYYY-MM-DD
 
 <How it shows: input, steps, environment, error output. The area where it shows.>
 
+## Open questions
+
+<One per item: the question, then `Default:` the recommended answer. The user's answers go into the plan at approval;
+empty once approved.>
+
 ## Steps
 
 - [ ] 1. Reproduce and find the cause

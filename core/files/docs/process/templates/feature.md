@@ -15,6 +15,11 @@ Created: YYYY-MM-DD
 
 <Design topics and ideas it rests on; the modules it touches; interfaces it changes (the user's decision).>
 
+## Open questions
+
+<One per item: the question, then `Default:` the recommended answer. The user's answers go into the plan at approval;
+empty once approved.>
+
 ## Steps
 
 - [ ] 1. Design the shape

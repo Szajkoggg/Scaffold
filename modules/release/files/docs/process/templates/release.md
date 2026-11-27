@@ -17,6 +17,11 @@ agree; the user tags and publishes it.
 
 Last release: <tag>. What is going out: <plans, features, fixes>. Registry: <npm, NuGet, PyPI, a download page>.
 
+## Open questions
+
+<One per item: the question, then `Default:` the recommended answer. The user's answers go into the plan at approval;
+empty once approved.>
+
 ## Steps
 
 - [ ] 1. Audit
