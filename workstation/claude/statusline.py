@@ -269,7 +269,7 @@ def third_line(data: dict) -> str:
     return f" {GREY}|{RESET} ".join(p for p in parts if p)
 
 
-def first_line(data: dict, short: bool = False) -> str:
+def first_line(data: dict, git: str, short: bool = False) -> str:
     workspace = data.get("workspace") or {}
     raw = data.get("cwd") or workspace.get("current_dir") or ""
     home = os.path.expanduser("~")
@@ -278,7 +278,6 @@ def first_line(data: dict, short: bool = False) -> str:
     if short and shown.count("/") > 2:
         shown = "…/" + "/".join(shown.rstrip("/").split("/")[-2:])
     parts = [shown]
-    git = git_state(raw) if raw else ""
     if git:
         parts.append(git)
     worktree = (data.get("worktree") or {}).get("name") or workspace.get("git_worktree")
@@ -350,9 +349,11 @@ def main() -> None:
     second = "   ".join(text + extra for text, extra in bars)
     if visible_length(second) > width:
         second = "   ".join(text for text, _ in bars)
-    first = first_line(data)
+    cwd = data.get("cwd") or (data.get("workspace") or {}).get("current_dir") or ""
+    git = git_state(cwd) if cwd else ""  # once: the short form below reuses it
+    first = first_line(data, git)
     if visible_length(first) > width:
-        first = first_line(data, short=True)
+        first = first_line(data, git, short=True)
     print(first)
     if second:
         print(second)
