@@ -55,8 +55,12 @@ None.
 
 - Every preset scaffolds into a scratch folder and passes `check_docs.py` (0 errors; the placeholder warnings are
   expected before a bootstrap).
-- **Gap**: ruff is not installed on the current workstation; today's changes to `scaffold.py`, `notify.py` and
-  `wrap_up_guard.py` were not linted.
+- The scaffold's Python scripts pass the `python` module's ruff rules (`uvx ruff`; tools started by name carry
+  `noqa: S603, S607`). Two lines from before 2026-11-27 are past 120 characters (`scaffold.py`, the status line's
+  docstring).
+- Audited 2026-11-27: agent wrappers match their roles and "Runs at" tables, skills cite existing sections, no
+  personal names in delivered content. Open from it: `release` has no `## Review`; `visual-review` and
+  `asset-pipeline` have no `## Sources`.
 - **Gap**: `scaffold.py` has no automated tests; it was tested by hand (apply, update, status, detect, workstation
   into a scratch home, the freshness and downgrade checks against throwaway clones). Worth a small test suite
   before larger changes to it.
