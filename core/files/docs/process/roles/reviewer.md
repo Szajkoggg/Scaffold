@@ -6,7 +6,8 @@ changing anything.
 
 ## Inputs
 
-- What to review: a commit range, a list of files, or a plan file (its diff).
+- What to review: a commit range, a list of files, or a plan file (its diff). For uncommitted work, the new files
+  are part of it: `git diff` leaves them out, `git ls-files --others --exclude-standard` lists them.
 - The criteria: the plan's "Done when", or the request the change answers.
 
 ## Rules

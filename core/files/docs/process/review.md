@@ -8,6 +8,8 @@ end of a plan. Skill: `review`; the role: `roles/reviewer.md`.
 
 - Give the reviewer **what** to review (a commit range, files, a plan file) and **the criteria** (the plan's "Done
   when", the request), never your own conclusions or what you expect it to find.
+- **Uncommitted work**: `git diff` leaves out new files, so name them too (`git ls-files --others
+  --exclude-standard` lists them). Read-only: do not stage them for the review.
 - Run it as `roles/README.md`, "Calling a role", says: the `reviewer` subagent in Claude Code, a fresh session
   elsewhere.
 - **Specialised reviews** come with modules and run beside the general one when a change is in their area: the
