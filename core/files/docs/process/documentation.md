@@ -22,6 +22,10 @@ the documentation stays cheap to read as the project grows.
 
 A change to behaviour, an interface or a command updates its documentation in the same commit.
 
+**When a document and the code disagree**, change neither on your own: name the mismatch to the user and ask which
+one is right. The code may have the bug, or the document may be ahead of it. A design topic says what is built and
+what is planned (`Planned:` in front of what is not built yet); a planned part is never deleted to match the code.
+
 ## Shape
 
 - Every document starts with its title and a `**Summary:**` line of one to three sentences. Indexes repeat it, so a
