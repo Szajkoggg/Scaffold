@@ -9,12 +9,15 @@ layout and the ownership model are in `README.md`.
   outside `{{placeholders}}`. Examples name kinds of things, not the user's projects.
 - **The text of a workflow lives once**: process documents in `core/files/docs/process/` (or a module's
   `files/docs/process/modules/`). Skills and agents are thin wrappers that point to them; a skill is written once
-  under `skills/` and `scaffold.py` delivers it to both Claude Code and Codex.
+  in a `skills/` folder (`core/`, a module's, or `workstation/`) and `scaffold.py` delivers it to both Claude Code and
+  Codex.
 - **Ownership is a contract.** Owned files are replaced in every project on update; seeds are never touched after
   the first copy. Moving a file between the two, renaming or removing an owned file affects every scaffolded
   project: say so in the commit message.
 - **Personal versus project**: about the user (language, status line, personal skills) goes in `workstation/`;
   about a project goes in `core/` or a module.
+- **Current rules only**: owned text, skills and playbooks state what is true now, never what changed; the history
+  is in the git log (`core/files/docs/process/documentation.md`, "Shape").
 - **Keep `core/files/AGENTS.md` under ~150 lines**: it is loaded into every session of every project.
 - **Test a change** by applying to a throwaway folder in the scratchpad or `tmp/`:
   `python scaffold.py apply <dir> --preset <p>`, then `python <dir>/docs/process/tools/check_docs.py` there; for the

@@ -29,6 +29,9 @@ A change to behaviour, an interface or a command updates its documentation in th
 - Headings that name their content, so a reader can jump by heading.
 - Facts are checkable: name the file, symbol or commit. Cite a section as `file.md, "Heading"`, never by line number.
 - Short sentences; tables for anything with the same fields per row.
+- Rules and process text state what is true now, as if it had always been so. What was renamed, removed or done
+  before belongs in `docs/log/` and commits: a session reads "X is no longer used" as a hint that X exists. A guard
+  against what an agent would do anyway stays, written as a plain rule ("stage explicit paths, never `git add -A`").
 
 ## Growth rules
 
