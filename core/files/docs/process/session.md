@@ -26,8 +26,9 @@ Do this at the start of a session, before the first change. Keep it cheap: summa
 ## Wrap-up
 
 When the user ends the session, asks for a wrap-up, a plan or task is finished, or the context is nearly full (the
-`wrap_up_guard` hook says so at 90 %, once per session, with the workstation status line; `WRAP_UP_GUARD_AT`
-changes the threshold):
+`wrap_up_guard` hook says so at 90 %, once per session, with the workstation status line, and shows the user a
+one-line notice; `WRAP_UP_GUARD_AT` changes the threshold, `WRAP_UP_GUARD_LOG=1` logs every run to
+`<temp>/claude-context/guard.log`):
 
 1. **Verify**: the full check passes, or what fails is named (the `check-runner` keeps its output out of the
    session).
