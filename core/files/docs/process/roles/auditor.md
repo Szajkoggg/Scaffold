@@ -21,8 +21,19 @@ decided by the user afterwards.
 2. For **principles**: read the changes in scope against the signs in `docs/process/principles.md`; list every
    `WORKAROUND:` marker and whether it is still needed; the ten largest and most complex files and functions
    (`docs/process/code.md`, "Size triggers"); synonyms of glossary terms.
-3. Run each tool with quiet output to `tmp/audit/`; read the results.
-4. Weigh each finding: high (a bug or a risk now), medium (makes work harder), low (cosmetic).
+3. For **documentation**: `check_docs.py --strict` first. Then read each document that describes the code (design
+   topics, `README.md`, `docs/WORKING.md`, `AGENTS.md` "Commands", "Where things are", "Rules the code keeps")
+   against the code:
+   - Settle what it promises first: parts marked `Planned:` (`docs/process/documentation.md`) are not built yet, and
+     are no finding.
+   - Sort each difference: **drift** (the document says X, the code does Y), **gap** (something a reader needs that
+     no document mentions), **thin** (named, too vague to use: a command without its arguments, a format without its
+     fields), **missing why** (a decision whose reason is nowhere and cannot be read from the code).
+   - Drift is reported, never settled: which side is right is the user's ("When a document and the code disagree").
+     A missing why becomes a question for the user.
+   - A pattern that repeats is one finding with a count and two examples.
+4. Run each tool with quiet output to `tmp/audit/`; read the results.
+5. Weigh each finding: high (a bug or a risk now), medium (makes work harder), low (cosmetic).
 
 ## Report
 

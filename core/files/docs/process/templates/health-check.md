@@ -33,8 +33,8 @@ empty once approved.>
     - **Dependencies**: outdated (minor/patch vs major), known vulnerabilities, unused.
     - **Tests**: slowest, flaky, skipped; recent changes without tests.
     - **Static analysis**: warning count, rules that no longer fit; if none is set up, propose a setup.
-    - **Documentation**: docs against the code (commands, paths, formats); files past their limit
-      (`documentation.md`, "Growth rules").
+    - **Documentation**: docs against the code: drift, gaps, thin parts, missing reasons (`../roles/auditor.md`,
+      "How to work"); files past their limit (`documentation.md`, "Growth rules").
     - **Performance**: the budgets in docs/WORKING.md, measured.
     - **Security**: secrets in the tree, risky input handling, over-broad permissions.
     Change nothing.
