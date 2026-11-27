@@ -15,6 +15,9 @@ role: `roles/reviewer.md`.
   elsewhere.
 - **Specialised reviews** come with modules and run beside the general one when a change is in their area: the
   `visual-critic` for changes to the look, the `security-reviewer` for changes to the attack surface.
+- **A second reviewer from another model family**, offered for a change to security, data or a public interface
+  when the other tool is installed: the same role and brief through `codex exec` from Claude Code, or `claude -p`
+  from Codex. Models of one family share blind spots.
 
 ## Reviewing a plan
 
@@ -28,7 +31,8 @@ plan is approved.
 - **fix** findings: make them, and list them in a line each.
 - **decision** findings: put them to the user with the options and the reviewer's recommendation; nothing is changed
   until the user answers.
-- A finding you think is wrong: say why in the report; never drop it silently.
+- Before acting on a finding, open its file and line: the problem is there as described. A finding that is not, or
+  that you think is wrong: say why in the report; never drop it silently.
 - At most three rounds: review, fix, review again, each new round given the previous findings and what was done
   about them. Later rounds raise the bar (`roles/reviewer.md`, "Later rounds"). After the third, report what remains.
 - Report the findings to the user with what was done about each, and the reviewer's "Noticed" lines (to
