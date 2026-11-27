@@ -11,6 +11,9 @@ Python 3.9+, standard library only.
     python scaffold.py status   <project>
     python scaffold.py workstation [--home DIR] [--dry-run] [--force]
 
+apply, update and workstation first fetch this repository and stop if the clone is behind its upstream, so another
+computer never installs an old scaffold without noticing; --stale-ok goes on anyway. No network: a note, no stop.
+
 A project records what it got in .scaffold/manifest.json (commit it). Files the scaffold owns are replaced on update
 while untouched; a file edited in the project is never overwritten: the new version is written to
 .scaffold/incoming/<path> for the agent to merge. Seed files (AGENTS.md, STATUS.md, ...) are copied once and belong to
@@ -73,6 +76,38 @@ def scaffold_version() -> str:
                               capture_output=True, text=True, check=True).stdout.strip() or "unversioned"
     except (OSError, subprocess.CalledProcessError):
         return "unversioned"
+
+
+def git(*args: str, timeout: float = 15) -> str:
+    return subprocess.run(["git", "-C", str(HOME), *args], capture_output=True, text=True, check=True,
+                          timeout=timeout).stdout.strip()
+
+
+def check_clone(args) -> None:
+    """Stop when this clone is behind its upstream: what it would install is older than what has been pushed."""
+    if getattr(args, "stale_ok", False):
+        return
+    try:
+        upstream = git("rev-parse", "--abbrev-ref", "@{upstream}")
+    except (OSError, subprocess.SubprocessError):
+        return  # not a git clone, or no upstream: nothing to compare with
+    try:
+        git("fetch", "--quiet")
+    except (OSError, subprocess.SubprocessError):
+        print(f"note: could not fetch {upstream} (offline?); the scaffold clone may be out of date")
+        return
+    ahead, behind = (int(n) for n in git("rev-list", "--left-right", "--count", "HEAD...@{upstream}").split())
+    if not behind:
+        return
+    where = HOME.as_posix()
+    if ahead:
+        fix = f"it is also {ahead} ahead: merge or rebase by hand in {where}"
+    elif git("status", "--porcelain", "--untracked-files=no"):
+        fix = f"it has uncommitted changes: commit or stash them, then git -C {where} pull --ff-only"
+    else:
+        fix = f"run: git -C {where} pull --ff-only"
+    sys.exit(f"the scaffold clone is {behind} commit(s) behind {upstream}; {fix}. Then run this again "
+             "(--stale-ok to go on with the old version).")
 
 
 def today() -> str:
@@ -412,6 +447,7 @@ def project_sync(root: Path, names: list[str], args, title: str):
 
 
 def cmd_apply(args):
+    check_clone(args)
     root = Path(args.project).resolve()
     if not args.dry_run:
         root.mkdir(parents=True, exist_ok=True)
@@ -430,6 +466,7 @@ def cmd_apply(args):
 
 
 def cmd_update(args):
+    check_clone(args)
     root = Path(args.project).resolve()
     if not (root / MANIFEST).exists():
         sys.exit(f"{root} has no {MANIFEST}: use apply")
@@ -573,6 +610,7 @@ def install_codex_footer(sync: Sync, items: list[str]):
 
 
 def cmd_workstation(args):
+    check_clone(args)
     home = Path(args.home).expanduser().resolve() if args.home else Path.home()
     ws = HOME / "workstation"
     conf = json.loads((ws / "workstation.json").read_text(encoding="utf-8"))
@@ -716,12 +754,14 @@ def main(argv=None):
             p.add_argument("--name", help="fills {{PROJECT_NAME}} in seed files")
         p.add_argument("--dry-run", action="store_true")
         p.add_argument("--force", action="store_true", help="overwrite owned files edited in the project")
+        p.add_argument("--stale-ok", action="store_true", help="go on although the scaffold clone is behind")
         p.set_defaults(fn=fn)
     p = sub.add_parser("workstation")
     p.add_argument("--home", help="home folder to install into (default: yours)")
     p.add_argument("--codex-footer-only", action="store_true", help="install only the native Codex CLI footer")
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--force", action="store_true")
+    p.add_argument("--stale-ok", action="store_true", help="go on although the scaffold clone is behind")
     p.set_defaults(fn=cmd_workstation)
     args = ap.parse_args(argv)
     args.fn(args)

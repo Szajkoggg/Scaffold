@@ -13,3 +13,5 @@ The scaffold lives at `{{SCAFFOLD_HOME}}`. Its script is `python {{SCAFFOLD_HOME
 2. Read and follow the playbook for that case, every step:
    `{{SCAFFOLD_HOME}}/playbooks/workstation.md`, `update.md`, `new-project.md` or `existing-project.md`.
 3. If `{{SCAFFOLD_HOME}}` does not exist, say so and ask where the scaffold repository is now.
+4. If `scaffold.py` stops because the scaffold clone is behind: when it says to run `pull --ff-only`, run it, say so
+   in one line, and run the command again; when it names local changes or a diverged clone, tell the user and stop.
