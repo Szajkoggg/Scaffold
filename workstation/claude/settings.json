@@ -3,5 +3,38 @@
     "type": "command",
     "command": "\"{{PYTHON}}\" \"{{HOME}}/.claude/statusline.py\"",
     "refreshInterval": 60
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"{{PYTHON}}\" \"{{HOME}}/.claude/notify.py\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"{{PYTHON}}\" \"{{HOME}}/.claude/notify.py\""
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"{{PYTHON}}\" \"{{HOME}}/.claude/notify.py\""
+          }
+        ]
+      }
+    ]
   }
 }

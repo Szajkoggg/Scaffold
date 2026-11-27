@@ -13,6 +13,10 @@
       "to": ".claude/statusline.py"
     },
     {
+      "from": "claude/notify.py",
+      "to": ".claude/notify.py"
+    },
+    {
       "from": "claude/themes/graphite.json",
       "to": ".claude/themes/graphite.json"
     },

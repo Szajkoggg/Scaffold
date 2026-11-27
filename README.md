@@ -25,7 +25,7 @@ the file work, so the result is the same every time.
 scaffold.py           list / detect / apply / update / status / workstation
 presets.json          named sets of modules (game-unity, webapp, asset-studio, ...)
 playbooks/            what the agent does for each use
-workstation/          the personal layer: skills, personal rules, status line, themes, settings
+workstation/          the personal layer: skills, personal rules, status line, notifications, themes, settings
 core/                 what every project gets
 modules/<name>/       stack modules (unity, dotnet, typescript, python, blender) and
                       concern modules (visual-review, web-ui, backend, release, asset-pipeline)
